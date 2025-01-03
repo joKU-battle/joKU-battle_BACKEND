@@ -70,6 +70,5 @@ jobs:
             sudo docker pull jokubattle2/jokubattle
             
             echo "가져온 이미지를 컨테이너로 띄우기"
-            sudo docker run -d -p 8080:8080 --name jokubattle jokubattle2/jokubattle
-            sudo docker run --network jokubattle --name jokubattle -d -p 8080:8081 ${{ secrets.DOCKERHUB_USERNAME }}/jokubattle
+            sudo docker run --network jokubattle --name jokubattle -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/jokubattle
             sudo docker image prune -f
