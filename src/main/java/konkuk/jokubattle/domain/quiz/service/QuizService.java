@@ -27,7 +27,9 @@ public class QuizService {
     public QuizResponseDto createQuiz(QuizRequestDto requestDto) {
         User user = userRepository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
+        if(quizRepository.existsByQuestion(requestDto.getQuestion())) {
+            throw new IllegalArgumentException("이미 존재하는 퀴즈입니다.");
+        }
         Quiz quiz = Quiz.create(requestDto.getQuestion(), requestDto.getAnswer(), user);
         Quiz savedQuiz = quizRepository.save(quiz);
 
