@@ -36,8 +36,8 @@ public class JokeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @Operation(summary = "월드컵 8강 진행", description = "우스운 말 투표를 시작합니다.")
-    @
+//    @Operation(summary = "월드컵 8강 진행", description = "우스운 말 투표를 시작합니다.")
+//    @
 
 
 }

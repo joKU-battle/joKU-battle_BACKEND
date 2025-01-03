@@ -17,6 +17,19 @@ public enum SwaggerResponseDescription {
     USER_MYPAGE(new LinkedHashSet<>(Set.of())),
     USER_RANKING(new LinkedHashSet<>(Set.of())),
 
+    //Quiz
+    QUIZ_CREATE(new LinkedHashSet<>(Set.of(
+            ErrorCode.QUIZ_ALREADY_EXISTS
+    ))),
+    QUIZ_LIST(new LinkedHashSet<>(Set.of())),
+    QUIZ_DETAIL(new LinkedHashSet<>(Set.of(
+            ErrorCode.QUIZ_NOT_FOUND
+    ))),
+    QUIZ_ATTEMPT(new LinkedHashSet<>(Set.of(
+            ErrorCode.QUIZ_NOT_FOUND
+    ))),
+    QUIZ_RECOMMEND(new LinkedHashSet<>(Set.of(
+    )))
     ;
 
 

@@ -49,6 +49,10 @@ public enum ErrorCode {
     USER_DUPLICATE_ID(-301, "이미 존재하는 아이디입니다.", 401),
     USER_NOT_MATCH_PASSWORD(-302, "비밀번호가 일치하지 않습니다.", 403),
 
+
+    //Quiz
+    QUIZ_NOT_FOUND(-400, "퀴즈를 찾을 수 없습니다.", 406),
+    QUIZ_ALREADY_EXISTS(-401, "이미 존재하는 퀴즈입니다.", 401),
     ;
 
 
