@@ -4,9 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
-import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
+import konkuk.jokubattle.domain.quiz.dto.request.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
@@ -77,8 +76,8 @@ public class QuizController {
     @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_RECOMMEND)
     @PostMapping("recommendation")
     public SuccessResponse<QuizRecommendResDto> recommendQuiz(
-            @Validated @RequestBody QuizRecommendReqDto requestDto
+            @Parameter(hidden = true) @UserIdx Long usIdx
     ) {
-        return SuccessResponse.ok(quizService.increaseRecommendation(requestDto));
+        return SuccessResponse.ok(quizService.increaseRecommendation(usIdx));
     }
 }
