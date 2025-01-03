@@ -35,7 +35,9 @@ public enum SwaggerResponseDescription {
     JOKE_CREATE(new LinkedHashSet<>(Set.of(
             ErrorCode.JOKE_ALREADY_EXISTS
     ))),
-    JOKE_LIST(new LinkedHashSet<>(Set.of()))
+    JOKE_LIST(new LinkedHashSet<>(Set.of(
+            ErrorCode.JOKE_NOT_FOUND
+    )))
     ;
 
 

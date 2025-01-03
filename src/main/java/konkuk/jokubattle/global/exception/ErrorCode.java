@@ -55,7 +55,8 @@ public enum ErrorCode {
     QUIZ_ALREADY_EXISTS(-401, "이미 존재하는 퀴즈입니다.", 401),
 
     //Joke
-    JOKE_ALREADY_EXISTS(-500,"이미 존재하는 조크입니다. ", 401)
+    JOKE_ALREADY_EXISTS(-500,"이미 존재하는 조크입니다. ", 401),
+    JOKE_NOT_FOUND(-501,"해당 주차에 등록된 조크가 없습니다.",406)
     ;
 
 

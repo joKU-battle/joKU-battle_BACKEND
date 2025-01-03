@@ -28,9 +28,11 @@ public class JokeController {
     @Operation(summary = "우스운 말 목록", description = "우스운 말 목록을 조회합니다.")
     @CustomExceptionDescription(SwaggerResponseDescription.JOKE_LIST)
     @GetMapping()
-    public SuccessResponse<List<JokeResponseDto>> listJokes() {
-        List<JokeResponseDto> jokeResponseDtos = jokeService.getAllJokes();
-        return SuccessResponse.ok(jokeService.getAllJokes());
+    public SuccessResponse<List<JokeResponseDto>> listJokes(
+                                                            @RequestParam int month,
+                                                            @RequestParam int week
+    ) {
+        return SuccessResponse.ok(jokeService.getAllJokes(month, week));
     }
 
     @Operation(summary = "우스운 말 생성", description = "새로운 우스운 말을 생성합니다.")

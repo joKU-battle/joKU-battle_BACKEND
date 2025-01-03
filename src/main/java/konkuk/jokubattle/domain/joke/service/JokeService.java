@@ -9,7 +9,10 @@ import konkuk.jokubattle.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -35,8 +38,17 @@ public class JokeService {
     }
 
 
-    public List<JokeResponseDto> getAllJokes() {
-        return jokeRepository.findAll().stream()
+    public List<JokeResponseDto> getAllJokes(int month, int week) {
+        List<Joke> jokes = jokeRepository.findAllByMonthAndYear(month, week);
+
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+
+        return jokes.stream()
+                .filter(joke -> {
+                    LocalDate jokeDate = joke.getCreatedAt().toLocalDate();
+                    int jokeWeek = jokeDate.get(weekFields.weekOfMonth());
+                    return jokeWeek == week;
+                })
                 .map(joke -> new JokeResponseDto(
                         joke.getJoIdx(),
                         joke.getContent(),
@@ -47,6 +59,7 @@ public class JokeService {
                 ))
                 .collect(Collectors.toList());
     }
+
 
 
 }
