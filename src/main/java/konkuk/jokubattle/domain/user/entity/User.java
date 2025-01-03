@@ -1,5 +1,6 @@
 package konkuk.jokubattle.domain.user.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonDeserialize(builder = User.UserBuilder.class)
 @Builder
 @Table(name = "users")
 public class User {
