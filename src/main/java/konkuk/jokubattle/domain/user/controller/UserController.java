@@ -3,9 +3,11 @@ package konkuk.jokubattle.domain.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import konkuk.jokubattle.domain.user.dto.request.UserLoginReq;
 import konkuk.jokubattle.domain.user.dto.request.UserRegisterReq;
 import konkuk.jokubattle.domain.user.dto.response.UserMyPageRes;
+import konkuk.jokubattle.domain.user.dto.response.UserRankingRes;
 import konkuk.jokubattle.domain.user.dto.response.UserTokenRes;
 import konkuk.jokubattle.domain.user.service.UserService;
 import konkuk.jokubattle.global.annotation.UserIdx;
@@ -48,5 +50,12 @@ public class UserController {
             @Parameter(hidden = true) @UserIdx Long usIdx
     ) {
         return ResponseEntity.ok(userService.mypage(usIdx));
+    }
+
+    @Operation(summary = "랭킹", description = "전체 순위를 조회한다.")
+    @GetMapping("ranking")
+    public ResponseEntity<List<UserRankingRes>> ranking(
+    ) {
+        return ResponseEntity.ok(userService.ranking());
     }
 }
