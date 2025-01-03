@@ -62,14 +62,10 @@ jobs:
             
             # 컨테이너가 존재할 때만 컨테이너 제거 작업 수행
             POSTGRES_CONTAINER_NAME="moonduck"
-            
-            CONTAINERS=$(sudo docker ps -aq | grep -v $(sudo docker ps -aqf "name=$POSTGRES_CONTAINER_NAME") | grep -v $(sudo docker ps -aqf "name=$REDIS_CONTAINER_NAME"))
-            if [ -n "$CONTAINERS" ]; then
-              sudo docker stop $CONTAINERS
-              sudo docker rm -f $CONTAINERS
-            fi
+            sudo docker stop moonduck
+            sudo docker rm moonduck
             
             sudo docker pull jokubattle2/moonduck
-            sudo docker run --network moonduck -d -p 8080:8081 jokubattle2/moonduck
+            sudo docker run -d -p 8080:8081 --name moonduck jokubattle2/moonduck
             sudo docker image prune -f
             ps -ef | grep docker
