@@ -1,8 +1,13 @@
 package konkuk.jokubattle.domain.user.service;
 
 import jakarta.transaction.Transactional;
-import java.util.List;
-import konkuk.jokubattle.domain.title.dto.response.TitleRes;
+import java.time.LocalDateTime;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
+import java.util.Optional;
+import konkuk.jokubattle.domain.title.dto.response.TitleDetailRes;
+import konkuk.jokubattle.domain.title.entity.Title;
+import konkuk.jokubattle.domain.title.repository.TitleRepository;
 import konkuk.jokubattle.domain.user.dto.request.UserLoginReq;
 import konkuk.jokubattle.domain.user.dto.request.UserRegisterReq;
 import konkuk.jokubattle.domain.user.dto.response.UserMyPageRes;
@@ -20,6 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+    private final TitleRepository titleRepository;
 
     public UserTokenRes register(UserRegisterReq req) {
         if (userRepository.existsById(req.getId())) {
@@ -46,11 +52,23 @@ public class UserService {
     public UserMyPageRes mypage(Long usIdx) {
         User user = userRepository.findById(usIdx)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-        List<TitleRes> titles = user.getTitles().stream()
-                .map(title -> new TitleRes(title.getName()))
-                .toList();
-        return UserMyPageRes.builder()
-                .titles(titles)
-                .build();
+
+        String imageUrl = "https://www.adobe.com/kr/creativecloud/photography/hub/features/roc/media_126f51234e424100112aecb4f61e26b3a2afc74d8.jpeg?width=750&format=jpeg&optimize=medium";
+
+        Optional<Title> title = titleRepository.findRecentTitleByUsIdx(usIdx);
+        if (title.isEmpty()) {
+            return new UserMyPageRes(imageUrl, user.getName(), user.getDepartment(), null);
+        }
+        LocalDateTime createdAt = title.get().getCreatedAt();
+        TitleDetailRes titleDetailRes = getTitleDetailRes(createdAt, title.get().getName());
+
+        return new UserMyPageRes(imageUrl, user.getName(), user.getDepartment(), titleDetailRes);
+    }
+
+    private TitleDetailRes getTitleDetailRes(LocalDateTime createdAt, String titleName) {
+        int monthValue = createdAt.getMonthValue();
+        WeekFields weekFields = WeekFields.of(Locale.KOREA);
+        int weekValue = createdAt.get(weekFields.weekOfMonth());
+        return new TitleDetailRes(titleName, monthValue, weekValue);
     }
 }

@@ -7,7 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class TitleRes {
+public class TitleDetailRes {
 
     private String name;
+
+    private int month;
+
+    private int week;
 }
