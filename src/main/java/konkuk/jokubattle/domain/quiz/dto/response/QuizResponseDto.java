@@ -1,8 +1,10 @@
-package konkuk.jokubattle.domain.quiz.dto;
+package konkuk.jokubattle.domain.quiz.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
