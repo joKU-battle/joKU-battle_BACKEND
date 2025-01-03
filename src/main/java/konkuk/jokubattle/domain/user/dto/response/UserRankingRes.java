@@ -18,4 +18,7 @@ public class UserRankingRes {
 
     @Schema(description = "점수")
     private int score;
+
+    @Schema(description = "프로필 이미지")
+    private String image;
 }

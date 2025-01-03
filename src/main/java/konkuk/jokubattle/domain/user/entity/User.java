@@ -43,20 +43,23 @@ public class User {
     @Builder.Default
     private int score = 0;
 
+    private String image;
+
     @OneToMany
     @JoinColumn(name = "us_idx")
     private List<Title> titles;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private LocalDateTime createdAt;
 
 
-    public static User create(String id, String password, String name, String department) {
+    public static User create(String id, String password, String name, String department, String image) {
         return User.builder()
                 .id(id)
                 .password(password)
                 .name(name)
                 .department(department)
+                .image(image)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
