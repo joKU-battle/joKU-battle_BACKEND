@@ -64,7 +64,7 @@ jobs:
             
             echo "사용하지 않는 컨테이너 제거"
             sudo docker stop jokubattle
-            sudo docker rm jokubattle
+            sudo docker rm -f jokubattle
             
             echo "도커 허브에서 이미지 가져오기"
             sudo docker pull jokubattle2/jokubattle
