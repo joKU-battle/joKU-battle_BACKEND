@@ -52,7 +52,8 @@ public enum ErrorCode {
 
     //Joke
     JOKE_ALREADY_EXISTS(-500,"이미 존재하는 조크입니다. ", 401),
-    JOKE_NOT_FOUND(-501,"해당 주차에 등록된 조크가 없습니다.",406)
+    JOKE_NOT_FOUND_WEEKLY(-501,"해당 주차에 등록된 조크가 없습니다.",406),
+    JOKE_NOT_FOUND(-502,"존재하지 않는 조크입니다.",406)
     ;
 
 

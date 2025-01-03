@@ -48,18 +48,21 @@ public class JokeService {
     public List<JokeResponseDto> getAllJokes(int month, int week) {
         List<Joke> jokes = jokeRepository.findAllByMonthAndYear(month, LocalDate.now().getYear());
 
-        if (jokes.isEmpty()) {
-            throw new CustomException(ErrorCode.JOKE_NOT_FOUND);
-        }
-
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
 
-        return jokes.stream()
+        List<Joke> filteredJokes = jokes.stream()
                 .filter(joke -> {
                     LocalDate jokeDate = joke.getCreatedAt().toLocalDate();
                     int jokeWeek = jokeDate.get(weekFields.weekOfYear());
                     return jokeWeek == week;
                 })
+                .collect(Collectors.toList());
+
+        if (filteredJokes.isEmpty()) {
+            throw new CustomException(ErrorCode.JOKE_NOT_FOUND_WEEKLY);
+        }
+
+        return filteredJokes.stream()
                 .map(joke -> new JokeResponseDto(
                         joke.getJoIdx(),
                         joke.getContent(),
@@ -69,6 +72,7 @@ public class JokeService {
                         joke.getPickedCount()
                 ))
                 .collect(Collectors.toList());
+
     }
 
     public List<JokeWorldCupRes> jokeWorldCup() {
