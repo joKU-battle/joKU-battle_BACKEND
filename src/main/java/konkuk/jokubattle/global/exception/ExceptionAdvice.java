@@ -1,9 +1,12 @@
 package konkuk.jokubattle.global.exception;
 
+import static konkuk.jokubattle.global.exception.ErrorCode.NOT_FOUND_PATH;
+
 import java.util.ArrayList;
 import java.util.List;
-import konkuk.jokubattle.global.dto.response.ParameterData;
-import konkuk.jokubattle.global.dto.response.ServerErrorData;
+import konkuk.jokubattle.global.dto.response.ErrorResponse;
+import konkuk.jokubattle.global.dto.response.result.ParameterData;
+import konkuk.jokubattle.global.dto.response.result.ServerErrorData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,16 +32,16 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected ResponseEntity<ServerErrorData> handleUntrackedException(Exception e) {
+    protected ErrorResponse<ServerErrorData> handleUntrackedException(Exception e) {
         log.error("[UNTRACKED ERROR] class: [{}], message: [{}]",
-            e.getClass().getSimpleName(),
-            e.getMessage());
+                e.getClass().getSimpleName(),
+                e.getMessage());
 
         ServerErrorData serverErrorData = ServerErrorData.builder()
-            .errorClass(e.getClass().toString())
-            .errorMessage(e.getMessage())
-            .build();
-        return new ResponseEntity<>(serverErrorData, HttpStatus.INTERNAL_SERVER_ERROR);
+                .errorClass(e.getClass().toString())
+                .errorMessage(e.getMessage())
+                .build();
+        return ErrorResponse.of(ErrorCode.SERVER_UNTRACKED_ERROR, serverErrorData);
     }
 
     /**
@@ -46,25 +49,25 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<List<ParameterData>> handleValidationExceptions(MethodArgumentNotValidException e) {
+    public ErrorResponse<List<ParameterData>> handleValidationExceptions(MethodArgumentNotValidException e) {
         log.warn("[PARAMETER VALIDATION EXCEPTION] class: [{}], message: [{}], localizedMessage: [{}]",
-            e.getClass().getSimpleName(),
-            e.getMessage(),
-            e.getLocalizedMessage());
+                e.getClass().getSimpleName(),
+                e.getMessage(),
+                e.getLocalizedMessage());
 
         List<ParameterData> list = new ArrayList<>();
 
         BindingResult bindingResult = e.getBindingResult();
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             ParameterData parameterData = ParameterData.builder()
-                .key(fieldError.getField())
-                .value(fieldError.getRejectedValue() == null ? null : fieldError.getRejectedValue().toString())
-                .reason(fieldError.getDefaultMessage())
-                .build();
+                    .key(fieldError.getField())
+                    .value(fieldError.getRejectedValue() == null ? null : fieldError.getRejectedValue().toString())
+                    .reason(fieldError.getDefaultMessage())
+                    .build();
             list.add(parameterData);
         }
 
-        return new ResponseEntity<>(list, HttpStatus.UNPROCESSABLE_ENTITY);
+        return ErrorResponse.of(ErrorCode.PARAMETER_VALIDATION_ERROR, list);
     }
 
     /**
@@ -72,12 +75,12 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler({HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<String> handleHttpMessageParsingExceptions(HttpMessageNotReadableException e) {
+    public ErrorResponse<String> handleHttpMessageParsingExceptions(HttpMessageNotReadableException e) {
         log.warn("[PARAMETER GRAMMAR EXCEPTION] class: [{}], message: [{}]",
-            e.getClass().getSimpleName(),
-            e.getMessage());
+                e.getClass().getSimpleName(),
+                e.getMessage());
 
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        return ErrorResponse.of(ErrorCode.PARAMETER_GRAMMAR_ERROR);
     }
 
     /**
@@ -85,12 +88,34 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<String> handleHttpMessageParsingExceptions(MethodArgumentTypeMismatchException e) {
+    public ErrorResponse<String> handleHttpMessageParsingExceptions(MethodArgumentTypeMismatchException e) {
         log.warn("[METHOD ARGUMENT TYPE EXCEPTION] class: [{}], message: [{}]",
-            e.getClass().getSimpleName(),
-            e.getMessage());
+                e.getClass().getSimpleName(),
+                e.getMessage());
 
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        return ErrorResponse.of(ErrorCode.INVALID_PARAMETER, e.getMessage());
+    }
+
+    /**
+     * 커스텀 예외
+     */
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse<Object>> handleCustomExceptions(CustomException e) {
+        ErrorCode errorCode = e.getErrorCode();
+
+        if (e.getOriginException() != null) {
+            log.error("[ORIGIN ERROR] class: [{}], message: [{}], localizedMessage: [{}]",
+                    e.getOriginException().getClass().getSimpleName(),
+                    e.getOriginException().getMessage(),
+                    e.getOriginException().getLocalizedMessage());
+        }
+        log.warn("[CUSTOM EXCEPTION] class: [{}], message: [{}]",
+                e.getClass().getSimpleName(),
+                errorCode.getMessage());
+
+        ErrorResponse<Object> body = ErrorResponse.of(errorCode, e.getAdditionalInfo());
+        HttpStatus httpStatus = HttpStatus.valueOf(errorCode.getHttpCode());
+        return new ResponseEntity<>(body, httpStatus);
     }
 
     /**
@@ -98,9 +123,10 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleInvalidPathExceptions(NoHandlerFoundException e) {
-        String meessage = e.getMessage();
-        return new ResponseEntity<>(meessage, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse<String>> handleInvalidPathExceptions(NoHandlerFoundException e) {
+        ErrorResponse<String> body = ErrorResponse.of(NOT_FOUND_PATH, e.getMessage());
+        HttpStatus httpStatus = HttpStatus.valueOf(NOT_FOUND_PATH.getHttpCode());
+        return new ResponseEntity<>(body, httpStatus);
     }
 
 }
