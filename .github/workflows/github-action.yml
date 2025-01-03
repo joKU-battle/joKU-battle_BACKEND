@@ -59,7 +59,7 @@ jobs:
           key: ${{secrets.GCP_KEY}}
 
           script: |
-            echo "joku12345" | sudo docker login -u jokubattle2 --password-stdin
+            echo ${{secrets.DOCKER_PASSWORD}} | sudo docker login -u ${{secrets.DOCKER_NAME}} --password-stdin
 
             CONTAINERS=$(sudo docker ps -aq | grep -v $(sudo docker ps -aqf "name=jokubattledb"))
             if [ -n "$CONTAINERS" ]; then
@@ -67,8 +67,8 @@ jobs:
               sudo docker rm -f $CONTAINERS
             fi
             
-            sudo docker pull jokubattle2/jokubattle
+            sudo docker pull ${{secrets.DOCKER_NAME}}/jokubattle
             
-            sudo docker run --network jokubattle --name jokubattle -d -p 8080:8080 ${{secrets.USER_NAME}}/jokubattle
+            sudo docker run --network jokubattle --name jokubattle -d -p 8080:8080 ${{secrets.DOCKER_NAME}}/jokubattle
             sudo docker image prune -f
             ps -ef | grep docker
