@@ -1,31 +1,23 @@
 package konkuk.jokubattle.global.jwt;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import lombok.Setter;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
 
-    public JwtAuthenticationFilter(JwtProvider jwtProvider) {
-        this.jwtProvider = jwtProvider;
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "*");
         response.setHeader("Access-Control-Allow-Headers", "*");
@@ -50,7 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private Authentication getAuthentication(String token) {
         Long usIdx = jwtProvider.getUsIdx(token);
-        JwtUserDetails jwtUserDetails = new JwtUserDetails(usIdx);
-        return new UsernamePasswordAuthenticationToken(jwtUserDetails, "");
+        return new JwtTokenAuthentication(usIdx);
     }
 }

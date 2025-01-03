@@ -1,5 +1,7 @@
 package konkuk.jokubattle.global.config;
 
+import konkuk.jokubattle.global.jwt.JwtAccessDeniedHandler;
+import konkuk.jokubattle.global.jwt.JwtAuthenticationEntryPoint;
 import konkuk.jokubattle.global.jwt.JwtAuthenticationFilter;
 import konkuk.jokubattle.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +50,6 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        log.debug("filterChain 진입");
-
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(
@@ -61,9 +61,13 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, PUBLIC_GET).permitAll()
                                 .requestMatchers(HttpMethod.PUT, PUBLIC_PUT).permitAll()
                                 .anyRequest().authenticated()
-
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+                );
+        http
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(authenticationManager -> authenticationManager
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                        .accessDeniedHandler(new JwtAccessDeniedHandler())
+                );
 
         return http.build();
     }
