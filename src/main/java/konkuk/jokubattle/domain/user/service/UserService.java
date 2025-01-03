@@ -11,12 +11,14 @@ import konkuk.jokubattle.domain.title.dto.response.TitleDetailRes;
 import konkuk.jokubattle.domain.title.entity.Title;
 import konkuk.jokubattle.domain.title.repository.TitleRepository;
 import konkuk.jokubattle.domain.user.dto.request.UserLoginReq;
-import konkuk.jokubattle.domain.user.dto.request.UserRegisterReq;
+import konkuk.jokubattle.domain.user.dto.request.UserSignupReq;
 import konkuk.jokubattle.domain.user.dto.response.UserMyPageRes;
 import konkuk.jokubattle.domain.user.dto.response.UserRankingRes;
 import konkuk.jokubattle.domain.user.dto.response.UserTokenRes;
 import konkuk.jokubattle.domain.user.entity.User;
 import konkuk.jokubattle.domain.user.repository.UserRepository;
+import konkuk.jokubattle.global.exception.CustomException;
+import konkuk.jokubattle.global.exception.ErrorCode;
 import konkuk.jokubattle.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,9 +33,9 @@ public class UserService {
     private final TitleRepository titleRepository;
     private final Random random = new Random();
 
-    public UserTokenRes register(UserRegisterReq req) {
+    public UserTokenRes register(UserSignupReq req) {
         if (userRepository.existsById(req.getId())) {
-            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+            throw new CustomException(ErrorCode.USER_DUPLICATE_ID);
         }
         User user = User.create(req.getId(), req.getPassword(), req.getName(), req.getDepartment(), getImage());
         user = userRepository.save(user);
@@ -67,9 +69,9 @@ public class UserService {
 
     public UserTokenRes login(UserLoginReq req) {
         User user = userRepository.findById(req.getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (!req.getPassword().equals(user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.USER_NOT_MATCH_PASSWORD);
         }
 
         String accessToken = jwtProvider.createAccessToken(user);
@@ -78,7 +80,7 @@ public class UserService {
 
     public UserMyPageRes mypage(Long usIdx) {
         User user = userRepository.findById(usIdx)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         Optional<Title> title = titleRepository.findRecentTitleByUsIdx(usIdx);
         if (title.isEmpty()) {

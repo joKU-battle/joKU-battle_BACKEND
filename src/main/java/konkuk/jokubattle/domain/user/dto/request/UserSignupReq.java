@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserRegisterReq {
+public class UserSignupReq {
 
     @Schema(description = "아이디")
     @NotBlank

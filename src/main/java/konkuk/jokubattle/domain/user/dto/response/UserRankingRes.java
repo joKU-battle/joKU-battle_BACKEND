@@ -10,15 +10,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserRankingRes {
 
-    @Schema(description = "이름")
+    @Schema(description = "이름", example = "김건국")
     private String name;
 
-    @Schema(description = "학과")
+    @Schema(description = "학과", example = "컴퓨터공학부")
     private String department;
 
-    @Schema(description = "점수")
+    @Schema(description = "점수", example = "110")
     private int score;
 
-    @Schema(description = "프로필 이미지")
+    @Schema(description = "프로필 이미지", example = "https://image.url")
     private String image;
 }

@@ -9,6 +9,9 @@ import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
 import konkuk.jokubattle.domain.quiz.service.QuizService;
+import konkuk.jokubattle.global.annotation.CustomExceptionDescription;
+import konkuk.jokubattle.global.config.swagger.SwaggerResponseDescription;
+import konkuk.jokubattle.global.dto.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,54 +31,47 @@ public class QuizController {
     private final QuizService quizService;
 
     @Operation(summary = "퀴즈 생성", description = "새로운 퀴즈를 생성합니다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_CREATE)
     @PostMapping()
-    public ResponseEntity<QuizResponseDto> createQuiz(
+    public SuccessResponse<QuizResponseDto> createQuiz(
             @Validated @RequestBody QuizRequestDto requestDto
     ) {
-        log.info("createQuiz 요청: {}", requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(quizService.createQuiz(requestDto));
+        return SuccessResponse.ok(quizService.createQuiz(requestDto));
     }
 
     @Operation(summary = "퀴즈 목록 조회", description = "퀴즈 목록을 조회합니다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_LIST)
     @GetMapping()
-    public ResponseEntity<List<QuizResponseDto>> showTodayQuizzes() {
-        log.info("showTodayQuizzes 요청");
-        List<QuizResponseDto> responseDtos = quizService.getAllQuizzes();
-        return ResponseEntity.ok(responseDtos);
+    public SuccessResponse<List<QuizResponseDto>> showTodayQuizzes() {
+        return SuccessResponse.ok(quizService.getAllQuizzes());
     }
 
     @Operation(summary = "퀴즈 상세 조회", description = "퀴즈 ID로 상세 정보를 조회합니다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_DETAIL)
     @GetMapping("{quizId}")
-    public ResponseEntity<QuizResponseDto> getQuizDetails(
+    public SuccessResponse<QuizResponseDto> getQuizDetails(
             @PathVariable long quizId
     ) {
-        log.info("getQuizDetails 요청: quizId={}", quizId);
         return quizService.getQuizById(quizId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(SuccessResponse::ok)
+                .orElseThrow(() -> new IllegalArgumentException("퀴즈를 찾을 수 없습니다."));
     }
 
     @Operation(summary = "퀴즈 도전", description = "퀴즈의 정답을 제출합니다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_ATTEMPT)
     @PostMapping("attempts")
-    public ResponseEntity<QuizSolveResponseDto> solveQuiz(
+    public SuccessResponse<QuizSolveResponseDto> solveQuiz(
             @Validated @RequestBody QuizSolveRequestDto requestDto
     ) {
-        log.info("solveQuiz 요청: quizId={}, answer={}", requestDto.getQuizId(), requestDto.getAnswer());
-        QuizSolveResponseDto responseDto = quizService.solveQuiz(requestDto);
-        if ("정답입니다!".equals(responseDto.getResultMessage())) {
-            return ResponseEntity.ok(responseDto);
-        } else if ("틀렸습니다!".equals(responseDto.getResultMessage())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+        return SuccessResponse.ok(quizService.solveQuiz(requestDto));
     }
 
     @Operation(summary = "퀴즈 추천", description = "퀴즈의 추천 수를 1 증가시킵니다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_RECOMMEND)
     @PostMapping("recommendation")
-    public ResponseEntity<QuizRecommendResDto> recommendQuiz(
+    public SuccessResponse<QuizRecommendResDto> recommendQuiz(
             @Validated @RequestBody QuizRecommendReqDto requestDto
-    ){
-        log.info("recommendQuiz 요청 : quizId={}",requestDto.getQuizId());
-        return ResponseEntity.ok(quizService.increaseRecommendation(requestDto));
+    ) {
+        return SuccessResponse.ok(quizService.increaseRecommendation(requestDto));
     }
 }
