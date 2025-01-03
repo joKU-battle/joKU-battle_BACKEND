@@ -48,8 +48,8 @@ public enum ErrorCode {
     QUIZ_ALREADY_EXISTS(-401, "이미 존재하는 퀴즈입니다.", 401),
 
     //Joke
-    JOKE_ALREADY_EXISTS(-500,"이미 존재하는 조크입니다. ", 401)
-    ;
+    JOKE_NOT_FOUND(-500, "우스운말이 존재하지 않습니다.", 406),
+    JOKE_ALREADY_EXISTS(-501, "이미 존재하는 조크입니다. ", 401);
 
 
     private final int errorCode;
