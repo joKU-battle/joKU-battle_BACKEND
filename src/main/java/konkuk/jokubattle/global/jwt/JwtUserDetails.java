@@ -1,11 +1,10 @@
 package konkuk.jokubattle.global.jwt;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import konkuk.jokubattle.global.exception.CustomException;
+import konkuk.jokubattle.global.exception.ErrorCode;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
@@ -15,7 +14,7 @@ public class JwtUserDetails implements UserDetails {
 
     public JwtUserDetails(Long usIdx) {
         if (usIdx == null) {
-            throw new IllegalArgumentException("UserDetails 생성에 실패했습니다.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED, "UserDetails 생성에 실패했습니다.");
         }
         this.usIdx = usIdx;
     }

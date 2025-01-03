@@ -9,11 +9,11 @@ import lombok.Setter;
 @Setter
 public class UserLoginReq {
 
-    @Schema(description = "아이디")
+    @Schema(description = "아이디", example = "konkukid")
     @NotBlank
     private String id;
 
-    @Schema(description = "비밀번호")
+    @Schema(description = "비밀번호", example = "password123")
     @NotBlank
     private String password;
 }

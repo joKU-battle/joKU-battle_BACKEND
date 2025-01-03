@@ -1,5 +1,7 @@
 package konkuk.jokubattle.global.annotation;
 
+import konkuk.jokubattle.global.exception.CustomException;
+import konkuk.jokubattle.global.exception.ErrorCode;
 import konkuk.jokubattle.global.jwt.JwtTokenAuthentication;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
@@ -31,13 +33,13 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private void validateAuthentication(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalArgumentException("인증되지 않은 유저입니다.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
     }
 
     private Long getUsIdxFromAuthentication(Authentication authentication) {
         if (!(authentication instanceof JwtTokenAuthentication)) {
-            throw new IllegalArgumentException("Authentication 설정이 잘못되었습니다.");
+            throw new CustomException(ErrorCode.AUTHENTICATION_SETTING_FAIL);
         }
         return ((JwtTokenAuthentication) authentication).getUsIdx();
     }
