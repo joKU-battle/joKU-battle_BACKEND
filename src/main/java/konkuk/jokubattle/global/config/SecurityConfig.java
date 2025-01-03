@@ -28,8 +28,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final String[] PUBLIC_POST = {
-            "/api/user/register",
-            "/api/user/login",
+            "/api/users/register",
+            "/api/users/login",
     };
 
     private final String[] PUBLIC_GET = {
