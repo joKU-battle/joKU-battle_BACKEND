@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public enum SwaggerResponseDescription {
 
+    // User
     USER_SIGNUP(new LinkedHashSet<>(Set.of(
             ErrorCode.USER_DUPLICATE_ID
     ))),
@@ -29,8 +30,10 @@ public enum SwaggerResponseDescription {
             ErrorCode.QUIZ_NOT_FOUND
     ))),
     QUIZ_RECOMMEND(new LinkedHashSet<>(Set.of(
-    )))
-    ;
+    ))),
+
+    // Joke
+    JOKE_WORLDCUP(new LinkedHashSet<>(Set.of()));
 
 
     private Set<ErrorCode> errorCodeList;

@@ -1,16 +1,16 @@
 package konkuk.jokubattle.domain.joke.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import konkuk.jokubattle.domain.joke.dto.request.JokeRequestDto;
 import konkuk.jokubattle.domain.joke.dto.response.JokeResponseDto;
+import konkuk.jokubattle.domain.joke.dto.response.JokeWorldCupRes;
 import konkuk.jokubattle.domain.joke.entity.Joke;
 import konkuk.jokubattle.domain.joke.repository.JokeRepository;
 import konkuk.jokubattle.domain.user.entity.User;
 import konkuk.jokubattle.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -48,5 +48,10 @@ public class JokeService {
                 .collect(Collectors.toList());
     }
 
-
+    public List<JokeWorldCupRes> jokeWorldCup() {
+        List<Joke> random8Data = jokeRepository.findRandom8Data();
+        return random8Data.stream()
+                .map(joke -> new JokeWorldCupRes(joke.getJoIdx(), joke.getContent()))
+                .toList();
+    }
 }

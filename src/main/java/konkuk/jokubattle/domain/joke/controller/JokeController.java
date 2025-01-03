@@ -5,7 +5,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import konkuk.jokubattle.domain.joke.dto.request.JokeRequestDto;
 import konkuk.jokubattle.domain.joke.dto.response.JokeResponseDto;
+import konkuk.jokubattle.domain.joke.dto.response.JokeWorldCupRes;
 import konkuk.jokubattle.domain.joke.service.JokeService;
+import konkuk.jokubattle.global.annotation.CustomExceptionDescription;
+import konkuk.jokubattle.global.config.swagger.SwaggerResponseDescription;
+import konkuk.jokubattle.global.dto.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,8 +43,12 @@ public class JokeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-//    @Operation(summary = "월드컵 8강 진행", description = "우스운 말 투표를 시작합니다.")
-//    @
+    @Operation(summary = "우스운말 월드컵 시작", description = "우스운말 월드컵에서 진행될 최대 8개의 데이터를 조회한다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.JOKE_WORLDCUP)
+    @GetMapping("worldcup")
+    public SuccessResponse<List<JokeWorldCupRes>> jokeWorldCup() {
+        return SuccessResponse.ok(jokeService.jokeWorldCup());
+    }
 
 
 }
