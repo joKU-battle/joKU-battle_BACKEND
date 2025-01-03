@@ -18,8 +18,8 @@ public class JokeService {
     private final JokeRepository jokeRepository;
     private final UserRepository userRepository;
 
-    public JokeResponseDto createJoke(JokeRequestDto jokeRequestDto) {
-        User user = userRepository.findById(jokeRequestDto.getUserId())
+    public JokeResponseDto createJoke(Long usIdx, JokeRequestDto jokeRequestDto) {
+        User user = userRepository.findById(usIdx)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
         Joke joke = Joke.create(jokeRequestDto.getContent(), user);
         Joke savedJoke = jokeRepository.save(joke);
