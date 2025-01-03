@@ -22,13 +22,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping("api/quiz")
+@RequestMapping("api/quizzes")
 public class QuizController {
 
     private final QuizService quizService;
 
     @Operation(summary = "퀴즈 생성", description = "새로운 퀴즈를 생성합니다.")
-    @PostMapping("create")
+    @PostMapping()
     public ResponseEntity<QuizResponseDto> createQuiz(
             @Validated @RequestBody QuizRequestDto requestDto
     ) {
@@ -56,7 +56,7 @@ public class QuizController {
     }
 
     @Operation(summary = "퀴즈 도전", description = "퀴즈의 정답을 제출합니다.")
-    @PostMapping("solve")
+    @PostMapping("attempts")
     public ResponseEntity<QuizSolveResponseDto> solveQuiz(
             @Validated @RequestBody QuizSolveRequestDto requestDto
     ) {
@@ -71,7 +71,7 @@ public class QuizController {
     }
 
     @Operation(summary = "퀴즈 추천", description = "퀴즈의 추천 수를 1 증가시킵니다.")
-    @PostMapping("recommendation")
+    @PostMapping("recommendations")
     public ResponseEntity<QuizRecommendResDto> recommendQuiz(
             @Validated @RequestBody QuizRecommendReqDto requestDto
     ){
