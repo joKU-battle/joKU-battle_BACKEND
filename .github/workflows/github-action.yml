@@ -4,6 +4,8 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   # Spring Boot 애플리케이션을 빌드하여 도커허브에 푸시하는 과정
@@ -28,18 +30,18 @@ jobs:
 
       # 4. Docker 이미지 빌드
       - name: docker image build
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/moonduck .
+        run: docker build -t jokubattle/moonduck .
 
       # 5. DockerHub 로그인
       - name: docker login
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: "jokubattle"
+          password: "joku1234"
 
       # 6. Docker Hub 이미지 푸시
       - name: docker Hub push
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/moonduck
+        run: docker push jokubattle/moonduck
 
   deploy:
     # build-docker-image (위)과정이 완료되어야 실행됩니다.
@@ -51,16 +53,15 @@ jobs:
       - name: NCP login and docker image pull and run
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.NCP_HOST }}
-          username: ${{ secrets.NCP_USERNAME }}
-          password: ${{ secrets.NCP_PASSWORD }}
-          port: ${{ secrets.NCP_PORT }}
+          host: 34.64.148.95
+          username: admin
+          password: jokubattle12
+          port: 5432
           script: |
-            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            echo "joku1234" | sudo docker login -u jokubattle --password-stdin
             
             # 컨테이너가 존재할 때만 컨테이너 제거 작업 수행
-            POSTGRES_CONTAINER_NAME="${{ secrets.CONTAINER_DB_NAME }}"
-            REDIS_CONTAINER_NAME="${{ secrets.CONTAINER_REDIS_NAME }}"
+            POSTGRES_CONTAINER_NAME="jokubattle"
             
             CONTAINERS=$(sudo docker ps -aq | grep -v $(sudo docker ps -aqf "name=$POSTGRES_CONTAINER_NAME") | grep -v $(sudo docker ps -aqf "name=$REDIS_CONTAINER_NAME"))
             if [ -n "$CONTAINERS" ]; then
@@ -68,7 +69,7 @@ jobs:
               sudo docker rm -f $CONTAINERS
             fi
             
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/moonduck
-            sudo docker run --network moonduck -d -p 8080:8081 ${{ secrets.DOCKERHUB_USERNAME }}/moonduck
+            sudo docker pull jokubattle/moonduck
+            sudo docker run --network moonduck -d -p 8080:8081 jokubattle/moonduck
             sudo docker image prune -f
             ps -ef | grep docker
