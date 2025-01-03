@@ -61,9 +61,12 @@ jobs:
           script: |
             echo "도커 로그인"
             sudo docker login -u jokubattle2 -p joku12345
-            
-            sudo docker stop jokubattle
-            sudo docker rm -f jokubattle
+
+            CONTAINERS=$(sudo docker ps -aq | grep -v $(sudo docker ps -aqf "name=jokubattledb")
+            if [ -n "$CONTAINERS" ]; then
+              sudo docker stop $CONTAINERS
+              sudo docker rm -f $CONTAINERS
+            fi
             
             sudo docker pull jokubattle2/jokubattle
             
