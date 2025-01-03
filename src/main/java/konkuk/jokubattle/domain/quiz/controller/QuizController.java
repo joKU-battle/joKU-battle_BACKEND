@@ -14,8 +14,6 @@ import konkuk.jokubattle.global.annotation.CustomExceptionDescription;
 import konkuk.jokubattle.global.annotation.UserIdx;
 import konkuk.jokubattle.global.config.swagger.SwaggerResponseDescription;
 import konkuk.jokubattle.global.dto.response.SuccessResponse;
-import konkuk.jokubattle.global.exception.CustomException;
-import konkuk.jokubattle.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -58,9 +56,7 @@ public class QuizController {
     public SuccessResponse<QuizResponseDto> getQuizDetails(
             @PathVariable("quizId") Long quizId
     ) {
-        return quizService.getQuizById(quizId)
-                .map(SuccessResponse::ok)
-                .orElseThrow(() -> new CustomException(ErrorCode.QUIZ_NOT_FOUND));
+        return SuccessResponse.ok(quizService.getQuizById(quizId));
     }
 
     @Operation(summary = "퀴즈 도전", description = "퀴즈의 정답을 제출합니다.")

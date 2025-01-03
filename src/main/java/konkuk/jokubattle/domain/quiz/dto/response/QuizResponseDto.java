@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,4 +16,6 @@ public class QuizResponseDto {
     private String userDepartment;
 
     private int recommendation;
+    private int correct;
+    private int wrong;
 }
