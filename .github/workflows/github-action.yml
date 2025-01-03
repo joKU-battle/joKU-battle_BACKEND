@@ -53,10 +53,10 @@ jobs:
       - name: NCP login and docker image pull and run
         uses: appleboy/ssh-action@master
         with:
-          host: 34.64.148.95
+          host: 34.64.148.95:5432
           username: admin
           password: jokubattle12
-          port: 5432
+          port: 22
           script: |
             echo "joku1234" | sudo docker login -u jokubattle2 -p joku12345
             
