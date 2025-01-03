@@ -57,8 +57,7 @@ jobs:
           username: admin
           password: jokubattle12
           port: 22
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{secrets.GCP_KEY}}
+          key: ${{secrets.GCP_KEY}}
           script: |
             echo "도커 로그인"
             sudo docker login -u jokubattle2 -p joku12345
