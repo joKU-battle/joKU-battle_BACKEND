@@ -1,10 +1,12 @@
 package konkuk.jokubattle.domain.joke.entity;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
-
-import konkuk.jokubattle.domain.quiz.entity.Quiz;
 import konkuk.jokubattle.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,5 +44,10 @@ public class Joke {
                 .createdAt(LocalDateTime.now())
                 .user(user)
                 .build();
+    }
+
+    public void select() {
+        pickedCount++;
+        user.increaseScore();
     }
 }
