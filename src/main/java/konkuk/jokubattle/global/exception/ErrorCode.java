@@ -26,13 +26,8 @@ public enum ErrorCode {
     INVALID_PARAMETER(-102, "잘못된 파라미터입니다.", 422),
     PARAMETER_VALIDATION_ERROR(-103, "파라미터 검증 에러입니다.", 422),
     PARAMETER_GRAMMAR_ERROR(-104, "파라미터 문법 에러입니다.", 422),
-    INVALID_ORDER_PARAMETER(-105, "잘못된 정렬 조건 파라미터입니다.", 422),
     INVALID_TYPE_PARAMETER(-106, "잘못된 타입 파라미터입니다.", 422),
-    OBJECT_DELETE_ERROR(-107, "객체 삭제 에러입니다.", 422),
     NOT_FOUND_PATH(-108, "존재하지 않는 API 경로입니다.", 404),
-    ERROR_FIREBASE_KEY_NOT_FOUND(-109, "파이어베이스 서비스 키에 대한 json 을 찾지 못 했습니다.", 422),
-    ERROR_GOOGLE_CREDENTIAL(-110, "구글 크레덴셜 생성 에러가 발생하였습니다.", 422),
-    ERROR_MTONET(-111, "안심번호 서비스 에러가 발생했습니다.", 422),
 
     //Auth
     UNAUTHORIZED(-200, "인증 자격이 없습니다.", 401),
@@ -40,8 +35,6 @@ public enum ErrorCode {
     JWT_ERROR_TOKEN(-202, "잘못된 토큰입니다.", 401),
     JWT_EXPIRE_TOKEN(-203, "만료된 토큰입니다.", 401),
     AUTHORIZED_ERROR(-204, "인증 과정 중 에러가 발생했습니다.", 500),
-    JWT_EXPIRE_REFRESH_TOKEN(-205, "관리하고 있지 않은 리프레시 토큰입니다", 401),
-    JWT_UNMATCHED_CLAIMS(-206, "토큰 인증 정보가 일치하지 않습니다", 401),
     AUTHENTICATION_SETTING_FAIL(-207, "인증정보 처리에 실패했습니다.", 500),
 
     // User

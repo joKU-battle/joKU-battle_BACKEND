@@ -37,7 +37,12 @@ public enum SwaggerResponseDescription {
     ))),
     JOKE_LIST(new LinkedHashSet<>(Set.of(
             ErrorCode.JOKE_NOT_FOUND
-    )))
+    ))),
+
+
+    JOKE_WORLDCUP(new LinkedHashSet<>(Set.of())),
+    JOKE_WORLDCUP_SELECT(new LinkedHashSet<>(Set.of())),
+
     ;
 
 

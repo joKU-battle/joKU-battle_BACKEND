@@ -65,4 +65,8 @@ public class User {
                 .createdAt(LocalDateTime.now())
                 .build();
     }
+
+    public void increaseScore() {
+        score++;
+    }
 }

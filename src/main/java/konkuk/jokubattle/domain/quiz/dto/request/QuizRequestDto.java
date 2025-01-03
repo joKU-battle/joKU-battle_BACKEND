@@ -1,4 +1,4 @@
-package konkuk.jokubattle.domain.quiz.dto;
+package konkuk.jokubattle.domain.quiz.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,5 +10,4 @@ import lombok.Setter;
 public class QuizRequestDto {
     private String question;
     private String answer;
-    private Long userId;
 }

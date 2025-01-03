@@ -1,11 +1,17 @@
 package konkuk.jokubattle.domain.quiz.service;
 
-import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
-import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
-import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
-import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
+import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
+import konkuk.jokubattle.domain.quiz.dto.request.QuizRequestDto;
+import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
+import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
 import konkuk.jokubattle.domain.quiz.entity.Quiz;
 import konkuk.jokubattle.domain.quiz.repository.QuizRepository;
 import konkuk.jokubattle.domain.user.entity.User;
@@ -15,24 +21,18 @@ import konkuk.jokubattle.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class QuizService {
 
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
 
-    public QuizResponseDto createQuiz(QuizRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserId())
+    public QuizResponseDto createQuiz(Long usIdx, QuizRequestDto requestDto) {
+        User user = userRepository.findById(usIdx)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        if(quizRepository.existsByQuestion(requestDto.getQuestion())) {
+        if (quizRepository.existsByQuestion(requestDto.getQuestion())) {
             throw new CustomException(ErrorCode.QUIZ_ALREADY_EXISTS);
         }
         Quiz quiz = Quiz.create(requestDto.getQuestion(), requestDto.getAnswer(), user);
@@ -78,13 +78,12 @@ public class QuizService {
                 ));
     }
 
-    public QuizSolveResponseDto solveQuiz(QuizSolveRequestDto requestDto) {
-        Long quizId = requestDto.getQuizId();
+    public QuizSolveResponseDto solveQuiz(Long quizId, QuizSolveRequestDto requestDto) {
         Optional<Quiz> quizOptional = quizRepository.findById(quizId);
         if (quizOptional.isPresent()) {
             Quiz quiz = quizOptional.get();
             if (quiz.getAnswer().equals(requestDto.getAnswer())) {
-                quiz.setCorrect(quiz.getCorrect()+ 1);
+                quiz.setCorrect(quiz.getCorrect() + 1);
                 Quiz savedQuiz = quizRepository.save(quiz);
                 return new QuizSolveResponseDto(savedQuiz.getQuIdx(), "정답입니다!");
             } else {
@@ -96,15 +95,10 @@ public class QuizService {
         return new QuizSolveResponseDto(quizId, "퀴즈를 찾을 수 없습니다.");
     }
 
-    public QuizRecommendResDto increaseRecommendation(QuizRecommendReqDto requestDto){
-        Long quizId = requestDto.getQuizId();
-        Optional<Quiz> quizOptional = quizRepository.findById(quizId);
-        if(quizOptional.isPresent()){
-            Quiz quiz = quizOptional.get();
-            quiz.setRecommendation(quiz.getRecommendation() + 1);
-            Quiz savedQuiz = quizRepository.save(quiz);
-            return new QuizRecommendResDto(savedQuiz.getQuIdx(),savedQuiz.getRecommendation());
-        }
-        throw new CustomException(ErrorCode.QUIZ_NOT_FOUND);
+    public QuizRecommendResDto increaseRecommendation(Long quIdx) {
+        Quiz quiz = quizRepository.findById(quIdx)
+                .orElseThrow(() -> new CustomException(ErrorCode.QUIZ_NOT_FOUND));
+        quiz.recommend();
+        return new QuizRecommendResDto(quiz.getQuIdx(), quiz.getRecommendation());
     }
 }
