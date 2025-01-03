@@ -10,8 +10,16 @@ import konkuk.jokubattle.domain.joke.entity.Joke;
 import konkuk.jokubattle.domain.joke.repository.JokeRepository;
 import konkuk.jokubattle.domain.user.entity.User;
 import konkuk.jokubattle.domain.user.repository.UserRepository;
+import konkuk.jokubattle.global.exception.CustomException;
+import konkuk.jokubattle.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +30,7 @@ public class JokeService {
 
     public JokeResponseDto createJoke(Long usIdx, JokeRequestDto jokeRequestDto) {
         User user = userRepository.findById(usIdx)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Joke joke = Joke.create(jokeRequestDto.getContent(), user);
         Joke savedJoke = jokeRepository.save(joke);
 
@@ -37,8 +45,21 @@ public class JokeService {
     }
 
 
-    public List<JokeResponseDto> getAllJokes() {
-        return jokeRepository.findAll().stream()
+    public List<JokeResponseDto> getAllJokes(int month, int week) {
+        List<Joke> jokes = jokeRepository.findAllByMonthAndYear(month, LocalDate.now().getYear());
+
+        if (jokes.isEmpty()) {
+            throw new CustomException(ErrorCode.JOKE_NOT_FOUND);
+        }
+
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+
+        return jokes.stream()
+                .filter(joke -> {
+                    LocalDate jokeDate = joke.getCreatedAt().toLocalDate();
+                    int jokeWeek = jokeDate.get(weekFields.weekOfYear());
+                    return jokeWeek == week;
+                })
                 .map(joke -> new JokeResponseDto(
                         joke.getJoIdx(),
                         joke.getContent(),
@@ -59,7 +80,7 @@ public class JokeService {
 
     public Boolean worldCupSelect(Long joIdx) {
         Joke joke = jokeRepository.findById(joIdx)
-                .orElseThrow(() -> new IllegalArgumentException("조회 실패"));
+                .orElseThrow(() -> new CustomException(ErrorCode.JOKE_NOT_FOUND));
         joke.select();
         return Boolean.TRUE;
     }

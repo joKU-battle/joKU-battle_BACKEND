@@ -7,9 +7,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
-import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
+import konkuk.jokubattle.domain.quiz.dto.request.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
@@ -54,7 +53,9 @@ public class QuizService {
         LocalDateTime endOfToday = LocalDate.now().atTime(LocalTime.MAX);  // 오늘의 23:59:59
 
         List<Quiz> quizzes = quizRepository.findAllByTodayOrderByRecommendationDesc(startOfToday, endOfToday);
-
+        if(quizzes.isEmpty()) {
+            throw new CustomException(ErrorCode.QUIZ_NOT_FOUND_TODAY);
+        }
         return quizzes.stream()
                 .map(quiz -> new QuizResponseDto(
                         quiz.getQuIdx(),
@@ -79,8 +80,7 @@ public class QuizService {
                 ));
     }
 
-    public QuizSolveResponseDto solveQuiz(QuizSolveRequestDto requestDto) {
-        Long quizId = requestDto.getQuizId();
+    public QuizSolveResponseDto solveQuiz(Long quizId, QuizSolveRequestDto requestDto) {
         Optional<Quiz> quizOptional = quizRepository.findById(quizId);
         if (quizOptional.isPresent()) {
             Quiz quiz = quizOptional.get();
@@ -97,9 +97,8 @@ public class QuizService {
         return new QuizSolveResponseDto(quizId, "퀴즈를 찾을 수 없습니다.");
     }
 
-    public QuizRecommendResDto increaseRecommendation(QuizRecommendReqDto requestDto) {
-        Long quizId = requestDto.getQuizId();
-        Quiz quiz = quizRepository.findById(quizId)
+    public QuizRecommendResDto increaseRecommendation(Long quIdx) {
+        Quiz quiz = quizRepository.findById(quIdx)
                 .orElseThrow(() -> new CustomException(ErrorCode.QUIZ_NOT_FOUND));
         quiz.recommend();
         return new QuizRecommendResDto(quiz.getQuIdx(), quiz.getRecommendation());

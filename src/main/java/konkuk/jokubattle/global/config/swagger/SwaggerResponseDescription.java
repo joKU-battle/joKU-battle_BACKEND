@@ -21,7 +21,9 @@ public enum SwaggerResponseDescription {
     QUIZ_CREATE(new LinkedHashSet<>(Set.of(
             ErrorCode.QUIZ_ALREADY_EXISTS
     ))),
-    QUIZ_LIST(new LinkedHashSet<>(Set.of())),
+    QUIZ_LIST(new LinkedHashSet<>(Set.of(
+            ErrorCode.QUIZ_NOT_FOUND_TODAY
+    ))),
     QUIZ_DETAIL(new LinkedHashSet<>(Set.of(
             ErrorCode.QUIZ_NOT_FOUND
     ))),
@@ -35,8 +37,10 @@ public enum SwaggerResponseDescription {
     JOKE_CREATE(new LinkedHashSet<>(Set.of(
             ErrorCode.JOKE_ALREADY_EXISTS
     ))),
-    JOKE_LIST(new LinkedHashSet<>(Set.of()))
-    ,
+    JOKE_LIST(new LinkedHashSet<>(Set.of(
+            ErrorCode.JOKE_NOT_FOUND
+    ))),
+
 
     JOKE_WORLDCUP(new LinkedHashSet<>(Set.of())),
     JOKE_WORLDCUP_SELECT(new LinkedHashSet<>(Set.of())),

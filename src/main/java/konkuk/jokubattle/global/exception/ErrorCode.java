@@ -46,9 +46,13 @@ public enum ErrorCode {
     //Quiz
     QUIZ_NOT_FOUND(-400, "퀴즈를 찾을 수 없습니다.", 406),
     QUIZ_ALREADY_EXISTS(-401, "이미 존재하는 퀴즈입니다.", 401),
+    QUIZ_NOT_FOUND_TODAY(-402,"오늘 등록된 퀴즈가 없습니다.",406),
+
+
 
     //Joke
-    JOKE_ALREADY_EXISTS(-500,"이미 존재하는 조크입니다. ", 401)
+    JOKE_ALREADY_EXISTS(-500,"이미 존재하는 조크입니다. ", 401),
+    JOKE_NOT_FOUND(-501,"해당 주차에 등록된 조크가 없습니다.",406)
     ;
 
 

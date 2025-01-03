@@ -4,9 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
-import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
+import konkuk.jokubattle.domain.quiz.dto.request.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
@@ -57,7 +56,7 @@ public class QuizController {
     @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_DETAIL)
     @GetMapping("{quizId}")
     public SuccessResponse<QuizResponseDto> getQuizDetails(
-            @PathVariable long quizId
+            @PathVariable("quizId") Long quizId
     ) {
         return quizService.getQuizById(quizId)
                 .map(SuccessResponse::ok)
@@ -66,19 +65,20 @@ public class QuizController {
 
     @Operation(summary = "퀴즈 도전", description = "퀴즈의 정답을 제출합니다.")
     @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_ATTEMPT)
-    @PostMapping("attempts")
+    @PostMapping("attempts/{quizId}")
     public SuccessResponse<QuizSolveResponseDto> solveQuiz(
-            @Validated @RequestBody QuizSolveRequestDto requestDto
+            @PathVariable("quizId") Long quizId,
+            @Validated @RequestBody QuizSolveRequestDto req
     ) {
-        return SuccessResponse.ok(quizService.solveQuiz(requestDto));
+        return SuccessResponse.ok(quizService.solveQuiz(quizId, req));
     }
 
     @Operation(summary = "퀴즈 추천", description = "퀴즈의 추천 수를 1 증가시킵니다.")
     @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_RECOMMEND)
-    @PostMapping("recommendation")
+    @PostMapping("recommendation/{quizId}")
     public SuccessResponse<QuizRecommendResDto> recommendQuiz(
-            @Validated @RequestBody QuizRecommendReqDto requestDto
+            @PathVariable("quizId") Long quizId
     ) {
-        return SuccessResponse.ok(quizService.increaseRecommendation(requestDto));
+        return SuccessResponse.ok(quizService.increaseRecommendation(quizId));
     }
 }
