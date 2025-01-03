@@ -78,7 +78,7 @@ public class JokeService {
 
     public Boolean worldCupSelect(Long joIdx) {
         Joke joke = jokeRepository.findById(joIdx)
-                .orElseThrow(() -> new IllegalArgumentException("조회 실패"));
+                .orElseThrow(() -> new CustomException(ErrorCode.JOKE_NOT_FOUND));
         joke.select();
         return Boolean.TRUE;
     }
