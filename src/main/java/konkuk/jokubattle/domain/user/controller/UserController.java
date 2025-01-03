@@ -1,6 +1,7 @@
 package konkuk.jokubattle.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import konkuk.jokubattle.domain.user.dto.request.UserLoginReq;
 import konkuk.jokubattle.domain.user.dto.request.UserRegisterReq;
@@ -44,7 +45,7 @@ public class UserController {
     @Operation(summary = "마이페이지", description = "자신의 정보를 조회한다.")
     @GetMapping("mypage")
     public ResponseEntity<UserMyPageRes> getMyPage(
-            @UserIdx Long usIdx
+            @Parameter(hidden = true) @UserIdx Long usIdx
     ) {
         return ResponseEntity.ok(userService.mypage(usIdx));
     }
