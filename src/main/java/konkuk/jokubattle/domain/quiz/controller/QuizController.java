@@ -37,7 +37,7 @@ public class QuizController {
     }
 
     @Operation(summary = "퀴즈 목록 조회", description = "퀴즈 목록을 조회합니다.")
-    @GetMapping("list")
+    @GetMapping()
     public ResponseEntity<List<QuizResponseDto>> showTodayQuizzes() {
         log.info("showTodayQuizzes 요청");
         List<QuizResponseDto> responseDtos = quizService.getAllQuizzes();
@@ -45,9 +45,9 @@ public class QuizController {
     }
 
     @Operation(summary = "퀴즈 상세 조회", description = "퀴즈 ID로 상세 정보를 조회합니다.")
-    @GetMapping("detail")
+    @GetMapping("{quizId}")
     public ResponseEntity<QuizResponseDto> getQuizDetails(
-            @RequestParam Long quizId
+            @PathVariable long quizId
     ) {
         log.info("getQuizDetails 요청: quizId={}", quizId);
         return quizService.getQuizById(quizId)
@@ -71,7 +71,7 @@ public class QuizController {
     }
 
     @Operation(summary = "퀴즈 추천", description = "퀴즈의 추천 수를 1 증가시킵니다.")
-    @PostMapping("recommendations")
+    @PostMapping("recommendation")
     public ResponseEntity<QuizRecommendResDto> recommendQuiz(
             @Validated @RequestBody QuizRecommendReqDto requestDto
     ){
