@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "유저", description = "유저 API")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("api/users")
 public class UserController {
 
     private final UserService userService;
 
     @Operation(summary = "회원가입", description = "유저가 회원가입한다.")
-    @PostMapping("register")
+    @PostMapping("signup")
     public ResponseEntity<UserTokenRes> register(
             @Validated @RequestBody UserRegisterReq req
     ) {
