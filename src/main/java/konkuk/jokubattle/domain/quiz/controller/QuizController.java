@@ -75,10 +75,10 @@ public class QuizController {
 
     @Operation(summary = "퀴즈 추천", description = "퀴즈의 추천 수를 1 증가시킵니다.")
     @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_RECOMMEND)
-    @PostMapping("recommendation")
+    @PostMapping("recommendation/{quizId}")
     public SuccessResponse<QuizRecommendResDto> recommendQuiz(
-            @Parameter(hidden = true) @UserIdx Long usIdx
+            @PathVariable("quizId") Long quizId
     ) {
-        return SuccessResponse.ok(quizService.increaseRecommendation(usIdx));
+        return SuccessResponse.ok(quizService.increaseRecommendation(quizId));
     }
 }
