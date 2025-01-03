@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import konkuk.jokubattle.domain.user.entity.User;
+import konkuk.jokubattle.global.exception.CustomException;
+import konkuk.jokubattle.global.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -48,19 +50,19 @@ public class JwtProvider {
                     .parseClaimsJws(token);
         } catch (SecurityException | MalformedJwtException e) {
             log.debug("잘못된 Jwt 서명입니다.");
-            throw new IllegalArgumentException("JWT 검증 중 오류가 발생했습니다.");
+            throw new CustomException(ErrorCode.JWT_ERROR_TOKEN);
         } catch (ExpiredJwtException e) {
             log.debug("만료된 토큰입니다.");
-            throw new IllegalArgumentException("JWT 검증 중 오류가 발생했습니다.");
+            throw new CustomException(ErrorCode.JWT_EXPIRE_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.debug("지원하지 않는 토큰입니다.");
-            throw new IllegalArgumentException("JWT 검증 중 오류가 발생했습니다.");
+            throw new CustomException(ErrorCode.JWT_ERROR_TOKEN);
         } catch (IllegalArgumentException e) {
             log.debug("잘못된 토큰입니다.");
-            throw new IllegalArgumentException("JWT 검증 중 오류가 발생했습니다.");
+            throw new CustomException(ErrorCode.JWT_ERROR_TOKEN);
         } catch (Exception e) {
             log.debug(e.getMessage());
-            throw new IllegalArgumentException("JWT 검증 중 오류가 발생했습니다.");
+            throw new CustomException(ErrorCode.JWT_ERROR_TOKEN);
         }
 
         return true;
