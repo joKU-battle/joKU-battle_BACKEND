@@ -58,14 +58,16 @@ jobs:
           password: jokubattle12
           port: 22
           script: |
-            echo "joku1234" | sudo docker login -u jokubattle2 -p joku12345
+            echo "도커 로그인"
+            sudo docker login -u jokubattle2 -p joku12345
             
-            # 컨테이너가 존재할 때만 컨테이너 제거 작업 수행
-            POSTGRES_CONTAINER_NAME="moonduck"
+            echo "사용하지 않는 컨테이너 제거"
             sudo docker stop moonduck
             sudo docker rm moonduck
             
+            echo "도커 허브에서 이미지 가져오기"
             sudo docker pull jokubattle2/moonduck
-            sudo docker run -d -p 8080:8081 --name moonduck jokubattle2/moonduck
+            
+            echo "가져온 이미지를 컨테이너로 띄우기"
+            sudo docker run -d -p 8080:8080 --name moonduck jokubattle2/moonduck
             sudo docker image prune -f
-            ps -ef | grep docker
