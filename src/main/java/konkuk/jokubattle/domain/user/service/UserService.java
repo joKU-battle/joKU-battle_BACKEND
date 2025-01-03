@@ -3,6 +3,7 @@ package konkuk.jokubattle.domain.user.service;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import konkuk.jokubattle.domain.title.dto.response.TitleDetailRes;
@@ -11,6 +12,7 @@ import konkuk.jokubattle.domain.title.repository.TitleRepository;
 import konkuk.jokubattle.domain.user.dto.request.UserLoginReq;
 import konkuk.jokubattle.domain.user.dto.request.UserRegisterReq;
 import konkuk.jokubattle.domain.user.dto.response.UserMyPageRes;
+import konkuk.jokubattle.domain.user.dto.response.UserRankingRes;
 import konkuk.jokubattle.domain.user.dto.response.UserTokenRes;
 import konkuk.jokubattle.domain.user.entity.User;
 import konkuk.jokubattle.domain.user.repository.UserRepository;
@@ -70,5 +72,13 @@ public class UserService {
         WeekFields weekFields = WeekFields.of(Locale.KOREA);
         int weekValue = createdAt.get(weekFields.weekOfMonth());
         return new TitleDetailRes(titleName, monthValue, weekValue);
+    }
+
+    public List<UserRankingRes> ranking() {
+        List<User> users = userRepository.findAllByOrderByScoreDescCreatedAtAsc();
+
+        return users.stream()
+                .map(user -> new UserRankingRes(user.getName(), user.getDepartment(), user.getScore()))
+                .toList();
     }
 }
