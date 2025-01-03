@@ -22,10 +22,13 @@ public class Joke {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long joIdx;
 
+    @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private int pickedCount;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne

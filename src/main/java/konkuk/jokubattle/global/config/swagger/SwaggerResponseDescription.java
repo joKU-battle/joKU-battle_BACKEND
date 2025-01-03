@@ -29,7 +29,13 @@ public enum SwaggerResponseDescription {
             ErrorCode.QUIZ_NOT_FOUND
     ))),
     QUIZ_RECOMMEND(new LinkedHashSet<>(Set.of(
-    )))
+    ))),
+
+    //Joke
+    JOKE_CREATE(new LinkedHashSet<>(Set.of(
+            ErrorCode.JOKE_ALREADY_EXISTS
+    ))),
+    JOKE_LIST(new LinkedHashSet<>(Set.of()))
     ;
 
 
