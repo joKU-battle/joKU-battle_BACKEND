@@ -6,6 +6,9 @@ import java.util.List;
 import konkuk.jokubattle.domain.joke.dto.request.JokeRequestDto;
 import konkuk.jokubattle.domain.joke.dto.response.JokeResponseDto;
 import konkuk.jokubattle.domain.joke.service.JokeService;
+import konkuk.jokubattle.global.annotation.CustomExceptionDescription;
+import konkuk.jokubattle.global.config.swagger.SwaggerResponseDescription;
+import konkuk.jokubattle.global.dto.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,22 +24,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping("api/joke")
+@RequestMapping("api/jokes")
 public class JokeController {
     private final JokeService jokeService;
 
     @Operation(summary = "우스운 말 목록", description = "우스운 말 목록을 조회합니다.")
-    @GetMapping("list")
-    public ResponseEntity<List<JokeResponseDto>> listJokes() {
+    @CustomExceptionDescription(SwaggerResponseDescription.JOKE_LIST)
+    @GetMapping()
+    public SuccessResponse<List<JokeResponseDto>> listJokes() {
         List<JokeResponseDto> jokeResponseDtos = jokeService.getAllJokes();
-        return ResponseEntity.status(HttpStatus.OK).body(jokeResponseDtos);
+        return SuccessResponse.ok(jokeService.getAllJokes());
     }
 
     @Operation(summary = "우스운 말 생성", description = "새로운 우스운 말을 생성합니다.")
-    @PostMapping("create")
-    public ResponseEntity<JokeResponseDto> createJoke(@Validated @RequestBody JokeRequestDto requestDto) {
-        JokeResponseDto responseDto = jokeService.createJoke(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    @CustomExceptionDescription(SwaggerResponseDescription.JOKE_CREATE)
+    @PostMapping()
+    public SuccessResponse<JokeResponseDto> createJoke(@Validated @RequestBody JokeRequestDto requestDto) {
+        return SuccessResponse.ok(jokeService.createJoke(requestDto));
     }
 
 //    @Operation(summary = "월드컵 8강 진행", description = "우스운 말 투표를 시작합니다.")
