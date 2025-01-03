@@ -7,9 +7,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
-import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
+import konkuk.jokubattle.domain.quiz.dto.request.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
@@ -97,9 +96,8 @@ public class QuizService {
         return new QuizSolveResponseDto(quizId, "퀴즈를 찾을 수 없습니다.");
     }
 
-    public QuizRecommendResDto increaseRecommendation(QuizRecommendReqDto requestDto) {
-        Long quizId = requestDto.getQuizId();
-        Quiz quiz = quizRepository.findById(quizId)
+    public QuizRecommendResDto increaseRecommendation(Long quIdx) {
+        Quiz quiz = quizRepository.findById(quIdx)
                 .orElseThrow(() -> new CustomException(ErrorCode.QUIZ_NOT_FOUND));
         quiz.recommend();
         return new QuizRecommendResDto(quiz.getQuIdx(), quiz.getRecommendation());

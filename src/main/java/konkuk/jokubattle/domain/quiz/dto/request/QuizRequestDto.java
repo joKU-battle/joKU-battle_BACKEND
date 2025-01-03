@@ -1,4 +1,4 @@
-package konkuk.jokubattle.domain.quiz.dto;
+package konkuk.jokubattle.domain.quiz.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
