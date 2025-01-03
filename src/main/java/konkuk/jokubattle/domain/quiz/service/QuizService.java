@@ -88,8 +88,9 @@ public class QuizService {
         if(quizOptional.isPresent()){
             Quiz quiz = quizOptional.get();
             quiz.setRecommendation(quiz.getRecommendation() + 1);
+            quizRepository.save(quiz);
             return new QuizRecommendResDto(quiz.getQuIdx(),quiz.getRecommendation());
         }
-        return null;
+        throw new IllegalArgumentException("퀴즈를 찾을 수 없습니다.");
     }
 }
