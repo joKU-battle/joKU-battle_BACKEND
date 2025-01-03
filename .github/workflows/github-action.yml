@@ -55,7 +55,7 @@ jobs:
         with:
           host: 34.64.148.95
           username: jokubattle
-          port: 5432
+          port: 22
           key: ${{secrets.GCP_KEY}}
           debug: true
 
