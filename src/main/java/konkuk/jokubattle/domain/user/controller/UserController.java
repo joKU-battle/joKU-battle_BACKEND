@@ -5,14 +5,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import konkuk.jokubattle.domain.user.dto.request.UserLoginReq;
-import konkuk.jokubattle.domain.user.dto.request.UserRegisterReq;
+import konkuk.jokubattle.domain.user.dto.request.UserSignupReq;
 import konkuk.jokubattle.domain.user.dto.response.UserMyPageRes;
 import konkuk.jokubattle.domain.user.dto.response.UserRankingRes;
 import konkuk.jokubattle.domain.user.dto.response.UserTokenRes;
 import konkuk.jokubattle.domain.user.service.UserService;
+import konkuk.jokubattle.global.annotation.CustomExceptionDescription;
 import konkuk.jokubattle.global.annotation.UserIdx;
+import konkuk.jokubattle.global.config.swagger.SwaggerResponseDescription;
+import konkuk.jokubattle.global.dto.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,33 +31,37 @@ public class UserController {
     private final UserService userService;
 
     @Operation(summary = "회원가입", description = "유저가 회원가입한다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.USER_SIGNUP)
     @PostMapping("signup")
-    public ResponseEntity<UserTokenRes> register(
-            @Validated @RequestBody UserRegisterReq req
+    public SuccessResponse<UserTokenRes> signup(
+            @Validated @RequestBody UserSignupReq req
     ) {
-        return ResponseEntity.ok(userService.register(req));
+        return SuccessResponse.ok(userService.register(req));
     }
 
     @Operation(summary = "로그인", description = "유저가 로그인한다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.USER_LOGIN)
     @PostMapping("login")
-    public ResponseEntity<UserTokenRes> login(
+    public SuccessResponse<UserTokenRes> login(
             @Validated @RequestBody UserLoginReq req
     ) {
-        return ResponseEntity.ok(userService.login(req));
+        return SuccessResponse.ok(userService.login(req));
     }
 
     @Operation(summary = "마이페이지", description = "자신의 정보를 조회한다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.USER_MYPAGE)
     @GetMapping("mypage")
-    public ResponseEntity<UserMyPageRes> getMyPage(
+    public SuccessResponse<UserMyPageRes> getMyPage(
             @Parameter(hidden = true) @UserIdx Long usIdx
     ) {
-        return ResponseEntity.ok(userService.mypage(usIdx));
+        return SuccessResponse.ok(userService.mypage(usIdx));
     }
 
     @Operation(summary = "랭킹", description = "전체 순위를 조회한다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.USER_RANKING)
     @GetMapping("ranking")
-    public ResponseEntity<List<UserRankingRes>> ranking(
+    public SuccessResponse<List<UserRankingRes>> ranking(
     ) {
-        return ResponseEntity.ok(userService.ranking());
+        return SuccessResponse.ok(userService.ranking());
     }
 }

@@ -1,4 +1,4 @@
-package konkuk.jokubattle.global.dto.response;
+package konkuk.jokubattle.global.dto.response.result;
 
 import lombok.Builder;
 import lombok.Getter;
