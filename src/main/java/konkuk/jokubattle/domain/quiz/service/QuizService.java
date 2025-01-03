@@ -30,8 +30,8 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
 
-    public QuizResponseDto createQuiz(QuizRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserId())
+    public QuizResponseDto createQuiz(Long usIdx, QuizRequestDto requestDto) {
+        User user = userRepository.findById(usIdx)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (quizRepository.existsByQuestion(requestDto.getQuestion())) {
             throw new CustomException(ErrorCode.QUIZ_ALREADY_EXISTS);

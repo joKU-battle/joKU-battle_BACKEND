@@ -1,25 +1,29 @@
 package konkuk.jokubattle.domain.quiz.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
-import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
+import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
-import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
+import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
 import konkuk.jokubattle.domain.quiz.service.QuizService;
 import konkuk.jokubattle.global.annotation.CustomExceptionDescription;
+import konkuk.jokubattle.global.annotation.UserIdx;
 import konkuk.jokubattle.global.config.swagger.SwaggerResponseDescription;
 import konkuk.jokubattle.global.dto.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "퀴즈", description = "퀴즈 API")
 @RequiredArgsConstructor
@@ -34,9 +38,10 @@ public class QuizController {
     @CustomExceptionDescription(SwaggerResponseDescription.QUIZ_CREATE)
     @PostMapping()
     public SuccessResponse<QuizResponseDto> createQuiz(
-            @Validated @RequestBody QuizRequestDto requestDto
+            @Validated @RequestBody QuizRequestDto requestDto,
+            @Parameter(hidden = true) @UserIdx Long usIdx
     ) {
-        return SuccessResponse.ok(quizService.createQuiz(requestDto));
+        return SuccessResponse.ok(quizService.createQuiz(usIdx, requestDto));
     }
 
     @Operation(summary = "퀴즈 목록 조회", description = "퀴즈 목록을 조회합니다.")
