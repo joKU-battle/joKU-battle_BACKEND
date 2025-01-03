@@ -18,16 +18,22 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long quIdx;
 
+    @Column(nullable = false)
     private String question;
 
+    @Column(nullable = false)
     private String answer;
 
+    @Column(nullable = false)
     private int recommendation;
-
+    
+    @Column(nullable = false)
     private int correct;
 
+    @Column(nullable = false)
     private int wrong;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne
