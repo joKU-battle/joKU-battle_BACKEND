@@ -54,7 +54,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: 34.64.148.95
-          username: admin
+          username: jokubattle
           password: jokubattle12
           port: 22
           key: ${{secrets.GCP_KEY}}
