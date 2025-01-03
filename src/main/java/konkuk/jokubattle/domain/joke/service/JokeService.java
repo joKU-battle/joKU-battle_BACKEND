@@ -1,5 +1,6 @@
 package konkuk.jokubattle.domain.joke.service;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import konkuk.jokubattle.domain.joke.dto.request.JokeRequestDto;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class JokeService {
     private final JokeRepository jokeRepository;
     private final UserRepository userRepository;

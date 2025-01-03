@@ -1,11 +1,18 @@
 package konkuk.jokubattle.domain.quiz.service;
 
+import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
-import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
+import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
-import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
 import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
+import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
 import konkuk.jokubattle.domain.quiz.entity.Quiz;
 import konkuk.jokubattle.domain.quiz.repository.QuizRepository;
 import konkuk.jokubattle.domain.user.entity.User;
@@ -13,15 +20,9 @@ import konkuk.jokubattle.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class QuizService {
 
     private final QuizRepository quizRepository;
@@ -30,7 +31,7 @@ public class QuizService {
     public QuizResponseDto createQuiz(QuizRequestDto requestDto) {
         User user = userRepository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        if(quizRepository.existsByQuestion(requestDto.getQuestion())) {
+        if (quizRepository.existsByQuestion(requestDto.getQuestion())) {
             throw new IllegalArgumentException("이미 존재하는 퀴즈입니다.");
         }
         Quiz quiz = Quiz.create(requestDto.getQuestion(), requestDto.getAnswer(), user);
@@ -82,7 +83,7 @@ public class QuizService {
         if (quizOptional.isPresent()) {
             Quiz quiz = quizOptional.get();
             if (quiz.getAnswer().equals(requestDto.getAnswer())) {
-                quiz.setCorrect(quiz.getCorrect()+ 1);
+                quiz.setCorrect(quiz.getCorrect() + 1);
                 Quiz savedQuiz = quizRepository.save(quiz);
                 return new QuizSolveResponseDto(savedQuiz.getQuIdx(), "정답입니다!");
             } else {
@@ -94,14 +95,14 @@ public class QuizService {
         return new QuizSolveResponseDto(quizId, "퀴즈를 찾을 수 없습니다.");
     }
 
-    public QuizRecommendResDto increaseRecommendation(QuizRecommendReqDto requestDto){
+    public QuizRecommendResDto increaseRecommendation(QuizRecommendReqDto requestDto) {
         Long quizId = requestDto.getQuizId();
         Optional<Quiz> quizOptional = quizRepository.findById(quizId);
-        if(quizOptional.isPresent()){
+        if (quizOptional.isPresent()) {
             Quiz quiz = quizOptional.get();
             quiz.setRecommendation(quiz.getRecommendation() + 1);
             Quiz savedQuiz = quizRepository.save(quiz);
-            return new QuizRecommendResDto(savedQuiz.getQuIdx(),savedQuiz.getRecommendation());
+            return new QuizRecommendResDto(savedQuiz.getQuIdx(), savedQuiz.getRecommendation());
         }
         throw new IllegalArgumentException("퀴즈를 찾을 수 없습니다.");
     }
