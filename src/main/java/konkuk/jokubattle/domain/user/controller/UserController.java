@@ -2,6 +2,7 @@ package konkuk.jokubattle.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import konkuk.jokubattle.domain.user.dto.request.UserLoginReq;
 import konkuk.jokubattle.domain.user.dto.request.UserRegisterReq;
 import konkuk.jokubattle.domain.user.dto.response.UserTokenRes;
 import konkuk.jokubattle.domain.user.service.UserService;
@@ -27,5 +28,13 @@ public class UserController {
             @Validated @RequestBody UserRegisterReq req
     ) {
         return ResponseEntity.ok(userService.register(req));
+    }
+
+    @Operation(summary = "로그인", description = "유저가 로그인한다.")
+    @PostMapping("login")
+    public ResponseEntity<UserTokenRes> login(
+            @Validated @RequestBody UserLoginReq req
+    ) {
+        return ResponseEntity.ok(userService.login(req));
     }
 }
