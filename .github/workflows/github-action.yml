@@ -70,5 +70,6 @@ jobs:
             
             sudo docker pull jokubattle2/jokubattle
             
-            sudo docker run --network jokubattle --name jokubattle -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/jokubattle
+            sudo docker run --network jokubattle --name jokubattle -d -p 8080:8080 ${{secrets.DOCKERHUB_USERNAME}}/jokubattle
             sudo docker image prune -f
+            ps -ef | grep docker
