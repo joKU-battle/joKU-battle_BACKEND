@@ -12,6 +12,8 @@ import konkuk.jokubattle.domain.quiz.service.QuizService;
 import konkuk.jokubattle.global.annotation.CustomExceptionDescription;
 import konkuk.jokubattle.global.config.swagger.SwaggerResponseDescription;
 import konkuk.jokubattle.global.dto.response.SuccessResponse;
+import konkuk.jokubattle.global.exception.CustomException;
+import konkuk.jokubattle.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -54,7 +56,7 @@ public class QuizController {
     ) {
         return quizService.getQuizById(quizId)
                 .map(SuccessResponse::ok)
-                .orElseThrow(() -> new IllegalArgumentException("퀴즈를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.QUIZ_NOT_FOUND));
     }
 
     @Operation(summary = "퀴즈 도전", description = "퀴즈의 정답을 제출합니다.")
