@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuizSolveRequestDto {
+public class QuizRecommendReqDto {
     private Long quizId;
-    private String answer;
 }
