@@ -30,18 +30,18 @@ jobs:
 
       # 4. Docker 이미지 빌드
       - name: docker image build
-        run: docker build -t jokubattle/moonduck .
+        run: docker build -t jokubattle2/moonduck .
 
       # 5. DockerHub 로그인
       - name: docker login
         uses: docker/login-action@v2
         with:
-          username: jokubattle
-          password: ${{ secrets.DOCKER_TOKEN }}
+          username: jokubattle2
+          password: joku12345
 
       # 6. Docker Hub 이미지 푸시
       - name: docker Hub push
-        run: docker push jokubattle/moonduck
+        run: docker push jokubattle2/moonduck
 
   deploy:
     # build-docker-image (위)과정이 완료되어야 실행됩니다.
@@ -58,10 +58,10 @@ jobs:
           password: jokubattle12
           port: 5432
           script: |
-            echo "joku1234" | sudo docker login -u jokubattle --password-stdin
+            echo "joku1234" | sudo docker login -u jokubattle2 --password-stdin
             
             # 컨테이너가 존재할 때만 컨테이너 제거 작업 수행
-            POSTGRES_CONTAINER_NAME="jokubattle"
+            POSTGRES_CONTAINER_NAME="jokubattle2"
             
             CONTAINERS=$(sudo docker ps -aq | grep -v $(sudo docker ps -aqf "name=$POSTGRES_CONTAINER_NAME") | grep -v $(sudo docker ps -aqf "name=$REDIS_CONTAINER_NAME"))
             if [ -n "$CONTAINERS" ]; then
@@ -69,7 +69,7 @@ jobs:
               sudo docker rm -f $CONTAINERS
             fi
             
-            sudo docker pull jokubattle/moonduck
-            sudo docker run --network moonduck -d -p 8080:8081 jokubattle/moonduck
+            sudo docker pull jokubattle2/moonduck
+            sudo docker run --network moonduck -d -p 8080:8081 jokubattle2/moonduck
             sudo docker image prune -f
             ps -ef | grep docker
