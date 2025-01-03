@@ -59,8 +59,7 @@ jobs:
           key: ${{secrets.GCP_KEY}}
 
           script: |
-            echo "도커 로그인"
-            sudo docker login -u jokubattle2 -p joku12345
+            echo "joku12345" | sudo docker login -u jokubattle2 --password-stdin
 
             CONTAINERS=$(sudo docker ps -aq | grep -v $(sudo docker ps -aqf "name=jokubattledb"))
             if [ -n "$CONTAINERS" ]; then
