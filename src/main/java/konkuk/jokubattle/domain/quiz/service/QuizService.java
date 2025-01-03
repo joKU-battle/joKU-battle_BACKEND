@@ -17,6 +17,8 @@ import konkuk.jokubattle.domain.quiz.entity.Quiz;
 import konkuk.jokubattle.domain.quiz.repository.QuizRepository;
 import konkuk.jokubattle.domain.user.entity.User;
 import konkuk.jokubattle.domain.user.repository.UserRepository;
+import konkuk.jokubattle.global.exception.CustomException;
+import konkuk.jokubattle.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +32,9 @@ public class QuizService {
 
     public QuizResponseDto createQuiz(QuizRequestDto requestDto) {
         User user = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (quizRepository.existsByQuestion(requestDto.getQuestion())) {
-            throw new IllegalArgumentException("이미 존재하는 퀴즈입니다.");
+            throw new CustomException(ErrorCode.QUIZ_ALREADY_EXISTS);
         }
         Quiz quiz = Quiz.create(requestDto.getQuestion(), requestDto.getAnswer(), user);
         Quiz savedQuiz = quizRepository.save(quiz);
@@ -97,13 +99,9 @@ public class QuizService {
 
     public QuizRecommendResDto increaseRecommendation(QuizRecommendReqDto requestDto) {
         Long quizId = requestDto.getQuizId();
-        Optional<Quiz> quizOptional = quizRepository.findById(quizId);
-        if (quizOptional.isPresent()) {
-            Quiz quiz = quizOptional.get();
-            quiz.setRecommendation(quiz.getRecommendation() + 1);
-            Quiz savedQuiz = quizRepository.save(quiz);
-            return new QuizRecommendResDto(savedQuiz.getQuIdx(), savedQuiz.getRecommendation());
-        }
-        throw new IllegalArgumentException("퀴즈를 찾을 수 없습니다.");
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new CustomException(ErrorCode.QUIZ_NOT_FOUND));
+        quiz.recommend();
+        return new QuizRecommendResDto(quiz.getQuIdx(), quiz.getRecommendation());
     }
 }
