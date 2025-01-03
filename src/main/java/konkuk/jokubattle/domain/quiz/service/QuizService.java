@@ -1,7 +1,7 @@
 package konkuk.jokubattle.domain.quiz.service;
 
 import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
-import konkuk.jokubattle.domain.quiz.dto.QuizResponseDto;
+import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
@@ -13,6 +13,9 @@ import konkuk.jokubattle.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,7 +47,12 @@ public class QuizService {
     }
 
     public List<QuizResponseDto> getAllQuizzes() {
-        return quizRepository.findAll().stream()
+        LocalDateTime startOfToday = LocalDate.now().atStartOfDay();  // 오늘의 00:00:00
+        LocalDateTime endOfToday = LocalDate.now().atTime(LocalTime.MAX);  // 오늘의 23:59:59
+
+        List<Quiz> quizzes = quizRepository.findAllByTodayOrderByRecommendationDesc(startOfToday, endOfToday);
+
+        return quizzes.stream()
                 .map(quiz -> new QuizResponseDto(
                         quiz.getQuIdx(),
                         quiz.getQuestion(),
@@ -74,9 +82,13 @@ public class QuizService {
         if (quizOptional.isPresent()) {
             Quiz quiz = quizOptional.get();
             if (quiz.getAnswer().equals(requestDto.getAnswer())) {
-                return new QuizSolveResponseDto(quizId, "정답입니다!");
+                quiz.setCorrect(quiz.getCorrect()+ 1);
+                Quiz savedQuiz = quizRepository.save(quiz);
+                return new QuizSolveResponseDto(savedQuiz.getQuIdx(), "정답입니다!");
             } else {
-                return new QuizSolveResponseDto(quizId, "틀렸습니다!");
+                quiz.setWrong(quiz.getWrong() + 1);
+                Quiz savedQuiz = quizRepository.save(quiz);
+                return new QuizSolveResponseDto(savedQuiz.getQuIdx(), "틀렸습니다!");
             }
         }
         return new QuizSolveResponseDto(quizId, "퀴즈를 찾을 수 없습니다.");
@@ -88,8 +100,8 @@ public class QuizService {
         if(quizOptional.isPresent()){
             Quiz quiz = quizOptional.get();
             quiz.setRecommendation(quiz.getRecommendation() + 1);
-            quizRepository.save(quiz);
-            return new QuizRecommendResDto(quiz.getQuIdx(),quiz.getRecommendation());
+            Quiz savedQuiz = quizRepository.save(quiz);
+            return new QuizRecommendResDto(savedQuiz.getQuIdx(),savedQuiz.getRecommendation());
         }
         throw new IllegalArgumentException("퀴즈를 찾을 수 없습니다.");
     }

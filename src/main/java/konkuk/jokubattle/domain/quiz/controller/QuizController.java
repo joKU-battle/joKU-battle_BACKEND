@@ -3,7 +3,7 @@ package konkuk.jokubattle.domain.quiz.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
-import konkuk.jokubattle.domain.quiz.dto.QuizResponseDto;
+import konkuk.jokubattle.domain.quiz.dto.response.QuizResponseDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
@@ -22,25 +22,24 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping("api/quiz")
+@RequestMapping("api/quizzes")
 public class QuizController {
 
     private final QuizService quizService;
 
     @Operation(summary = "퀴즈 생성", description = "새로운 퀴즈를 생성합니다.")
-    @PostMapping("create")
+    @PostMapping()
     public ResponseEntity<QuizResponseDto> createQuiz(
             @Validated @RequestBody QuizRequestDto requestDto
     ) {
         log.info("createQuiz 요청: {}", requestDto);
-        QuizResponseDto responseDto = quizService.createQuiz(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(quizService.createQuiz(requestDto));
     }
 
     @Operation(summary = "퀴즈 목록 조회", description = "퀴즈 목록을 조회합니다.")
     @GetMapping("list")
-    public ResponseEntity<List<QuizResponseDto>> showQuizzes() {
-        log.info("showQuizzes 요청");
+    public ResponseEntity<List<QuizResponseDto>> showTodayQuizzes() {
+        log.info("showTodayQuizzes 요청");
         List<QuizResponseDto> responseDtos = quizService.getAllQuizzes();
         return ResponseEntity.ok(responseDtos);
     }
@@ -57,7 +56,7 @@ public class QuizController {
     }
 
     @Operation(summary = "퀴즈 도전", description = "퀴즈의 정답을 제출합니다.")
-    @PostMapping("solve")
+    @PostMapping("attempts")
     public ResponseEntity<QuizSolveResponseDto> solveQuiz(
             @Validated @RequestBody QuizSolveRequestDto requestDto
     ) {
@@ -72,12 +71,11 @@ public class QuizController {
     }
 
     @Operation(summary = "퀴즈 추천", description = "퀴즈의 추천 수를 1 증가시킵니다.")
-    @PostMapping("recommendation")
+    @PostMapping("recommendations")
     public ResponseEntity<QuizRecommendResDto> recommendQuiz(
             @Validated @RequestBody QuizRecommendReqDto requestDto
     ){
         log.info("recommendQuiz 요청 : quizId={}",requestDto.getQuizId());
-        QuizRecommendResDto quizRecommendResDto = quizService.increaseRecommendation(requestDto);
-        return ResponseEntity.ok(quizRecommendResDto);
+        return ResponseEntity.ok(quizService.increaseRecommendation(requestDto));
     }
 }
