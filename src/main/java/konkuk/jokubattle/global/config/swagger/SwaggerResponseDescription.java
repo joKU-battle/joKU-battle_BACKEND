@@ -33,7 +33,10 @@ public enum SwaggerResponseDescription {
     ))),
 
     // Joke
-    JOKE_WORLDCUP(new LinkedHashSet<>(Set.of()));
+    JOKE_WORLDCUP(new LinkedHashSet<>(Set.of())),
+    JOKE_WORLDCUP_SELECT(new LinkedHashSet<>(Set.of())),
+
+    ;
 
 
     private Set<ErrorCode> errorCodeList;

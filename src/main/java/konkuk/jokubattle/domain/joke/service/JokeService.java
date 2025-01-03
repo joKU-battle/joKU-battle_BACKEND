@@ -54,4 +54,11 @@ public class JokeService {
                 .map(joke -> new JokeWorldCupRes(joke.getJoIdx(), joke.getContent()))
                 .toList();
     }
+
+    public Boolean worldCupSelect(Long joIdx) {
+        Joke joke = jokeRepository.findById(joIdx)
+                .orElseThrow(() -> new IllegalArgumentException("조회 실패"));
+        joke.select();
+        return Boolean.TRUE;
+    }
 }

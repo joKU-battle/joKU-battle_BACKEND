@@ -16,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,5 +52,12 @@ public class JokeController {
         return SuccessResponse.ok(jokeService.jokeWorldCup());
     }
 
-
+    @Operation(summary = "우스운말 월드컵 선택", description = "우스운말 월드컵에서 하나를 선택한다.")
+    @CustomExceptionDescription(SwaggerResponseDescription.JOKE_WORLDCUP_SELECT)
+    @PutMapping("worldcup/{joIdx}")
+    public SuccessResponse<Boolean> worldCupSelect(
+            @PathVariable("joIdx") Long joIdx
+    ) {
+        return SuccessResponse.ok(jokeService.worldCupSelect(joIdx));
+    }
 }
