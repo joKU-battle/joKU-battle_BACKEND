@@ -49,15 +49,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # NCP 로그인
+      # GCP 로그인
       - name: NCP login and docker image pull and run
         uses: appleboy/ssh-action@master
         with:
-          host: 34.64.148.95
-          username: jokubattle
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USER_NAME}}
           port: 22
           key: ${{secrets.GCP_KEY}}
-          debug: true
 
           script: |
             echo "도커 로그인"
