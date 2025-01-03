@@ -58,10 +58,10 @@ jobs:
           password: jokubattle12
           port: 5432
           script: |
-            echo "joku1234" | sudo docker login -u jokubattle2 --password-stdin
+            echo "joku1234" | sudo docker login -u jokubattle2 -p joku12345
             
             # 컨테이너가 존재할 때만 컨테이너 제거 작업 수행
-            POSTGRES_CONTAINER_NAME="jokubattle2"
+            POSTGRES_CONTAINER_NAME="moonduck"
             
             CONTAINERS=$(sudo docker ps -aq | grep -v $(sudo docker ps -aqf "name=$POSTGRES_CONTAINER_NAME") | grep -v $(sudo docker ps -aqf "name=$REDIS_CONTAINER_NAME"))
             if [ -n "$CONTAINERS" ]; then
