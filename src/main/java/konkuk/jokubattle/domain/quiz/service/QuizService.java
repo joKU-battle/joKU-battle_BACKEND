@@ -44,7 +44,9 @@ public class QuizService {
                 savedQuiz.getCreatedAt().toString(),
                 savedQuiz.getUser().getName(),
                 savedQuiz.getUser().getDepartment(),
-                savedQuiz.getRecommendation()
+                savedQuiz.getRecommendation(),
+                quiz.getCorrect(),
+                quiz.getWrong()
         );
     }
 
@@ -63,21 +65,26 @@ public class QuizService {
                         quiz.getCreatedAt().toString(),
                         quiz.getUser().getName(),
                         quiz.getUser().getDepartment(),
-                        quiz.getRecommendation()
+                        quiz.getRecommendation(),
+                        quiz.getCorrect(),
+                        quiz.getWrong()
                 ))
                 .collect(Collectors.toList());
     }
 
-    public Optional<QuizResponseDto> getQuizById(Long quizId) {
-        return quizRepository.findById(quizId)
-                .map(quiz -> new QuizResponseDto(
-                        quiz.getQuIdx(),
-                        quiz.getQuestion(),
-                        quiz.getCreatedAt().toString(),
-                        quiz.getUser().getName(),
-                        quiz.getUser().getDepartment(),
-                        quiz.getRecommendation()
-                ));
+    public QuizResponseDto getQuizById(Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new CustomException(ErrorCode.QUIZ_NOT_FOUND));
+        return new QuizResponseDto(
+                quiz.getQuIdx(),
+                quiz.getQuestion(),
+                quiz.getCreatedAt().toString(),
+                quiz.getUser().getName(),
+                quiz.getUser().getDepartment(),
+                quiz.getRecommendation(),
+                quiz.getCorrect(),
+                quiz.getWrong()
+        );
     }
 
     public QuizSolveResponseDto solveQuiz(Long quizId, QuizSolveRequestDto requestDto) {
