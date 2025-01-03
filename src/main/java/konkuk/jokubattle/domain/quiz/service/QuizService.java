@@ -78,8 +78,7 @@ public class QuizService {
                 ));
     }
 
-    public QuizSolveResponseDto solveQuiz(QuizSolveRequestDto requestDto) {
-        Long quizId = requestDto.getQuizId();
+    public QuizSolveResponseDto solveQuiz(Long quizId, QuizSolveRequestDto requestDto) {
         Optional<Quiz> quizOptional = quizRepository.findById(quizId);
         if (quizOptional.isPresent()) {
             Quiz quiz = quizOptional.get();
