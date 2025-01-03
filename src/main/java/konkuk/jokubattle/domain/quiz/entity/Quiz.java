@@ -3,13 +3,12 @@ package konkuk.jokubattle.domain.quiz.entity;
 import jakarta.persistence.*;
 import konkuk.jokubattle.domain.user.entity.User;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

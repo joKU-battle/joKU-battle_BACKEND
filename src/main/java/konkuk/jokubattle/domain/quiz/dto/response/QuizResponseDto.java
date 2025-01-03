@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class QuizResponseDto {
-    private Long id;
+    private Long quizId;
     private String question;
     private String createdAt;
 

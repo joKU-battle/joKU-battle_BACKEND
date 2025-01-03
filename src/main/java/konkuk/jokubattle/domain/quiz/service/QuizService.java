@@ -2,8 +2,10 @@ package konkuk.jokubattle.domain.quiz.service;
 
 import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizResponseDto;
+import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
+import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
 import konkuk.jokubattle.domain.quiz.entity.Quiz;
 import konkuk.jokubattle.domain.quiz.repository.QuizRepository;
 import konkuk.jokubattle.domain.user.entity.User;
@@ -25,7 +27,9 @@ public class QuizService {
     public QuizResponseDto createQuiz(QuizRequestDto requestDto) {
         User user = userRepository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
+        if(quizRepository.existsByQuestion(requestDto.getQuestion())) {
+            throw new IllegalArgumentException("이미 존재하는 퀴즈입니다.");
+        }
         Quiz quiz = Quiz.create(requestDto.getQuestion(), requestDto.getAnswer(), user);
         Quiz savedQuiz = quizRepository.save(quiz);
 
@@ -64,7 +68,8 @@ public class QuizService {
                 ));
     }
 
-    public QuizSolveResponseDto solveQuiz(Long quizId, QuizSolveRequestDto requestDto) {
+    public QuizSolveResponseDto solveQuiz(QuizSolveRequestDto requestDto) {
+        Long quizId = requestDto.getQuizId();
         Optional<Quiz> quizOptional = quizRepository.findById(quizId);
         if (quizOptional.isPresent()) {
             Quiz quiz = quizOptional.get();
@@ -75,5 +80,17 @@ public class QuizService {
             }
         }
         return new QuizSolveResponseDto(quizId, "퀴즈를 찾을 수 없습니다.");
+    }
+
+    public QuizRecommendResDto increaseRecommendation(QuizRecommendReqDto requestDto){
+        Long quizId = requestDto.getQuizId();
+        Optional<Quiz> quizOptional = quizRepository.findById(quizId);
+        if(quizOptional.isPresent()){
+            Quiz quiz = quizOptional.get();
+            quiz.setRecommendation(quiz.getRecommendation() + 1);
+            quizRepository.save(quiz);
+            return new QuizRecommendResDto(quiz.getQuIdx(),quiz.getRecommendation());
+        }
+        throw new IllegalArgumentException("퀴즈를 찾을 수 없습니다.");
     }
 }

@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Quiz save(Quiz quiz);
+    boolean existsByQuestion(String question);
     Optional<Quiz> findById(long id);
     List<Quiz> findAll();
 }

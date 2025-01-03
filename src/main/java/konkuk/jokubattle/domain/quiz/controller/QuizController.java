@@ -4,9 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import konkuk.jokubattle.domain.quiz.dto.QuizRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizResponseDto;
-import konkuk.jokubattle.domain.quiz.dto.request.QuizDetailReq;
+import konkuk.jokubattle.domain.quiz.dto.request.QuizRecommendReqDto;
 import konkuk.jokubattle.domain.quiz.dto.request.QuizSolveRequestDto;
 import konkuk.jokubattle.domain.quiz.dto.QuizSolveResponseDto;
+import konkuk.jokubattle.domain.quiz.dto.response.QuizRecommendResDto;
 import konkuk.jokubattle.domain.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,13 +61,23 @@ public class QuizController {
     public ResponseEntity<QuizSolveResponseDto> solveQuiz(
             @Validated @RequestBody QuizSolveRequestDto requestDto
     ) {
-        log.info("solveQuiz 요청: quizId={}, answer={}", requestDto.getId(), requestDto.getAnswer());
-        QuizSolveResponseDto responseDto = quizService.solveQuiz(requestDto.getId(), requestDto);
+        log.info("solveQuiz 요청: quizId={}, answer={}", requestDto.getQuizId(), requestDto.getAnswer());
+        QuizSolveResponseDto responseDto = quizService.solveQuiz(requestDto);
         if ("정답입니다!".equals(responseDto.getResultMessage())) {
             return ResponseEntity.ok(responseDto);
         } else if ("틀렸습니다!".equals(responseDto.getResultMessage())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+    }
+
+    @Operation(summary = "퀴즈 추천", description = "퀴즈의 추천 수를 1 증가시킵니다.")
+    @PostMapping("recommendation")
+    public ResponseEntity<QuizRecommendResDto> recommendQuiz(
+            @Validated @RequestBody QuizRecommendReqDto requestDto
+    ){
+        log.info("recommendQuiz 요청 : quizId={}",requestDto.getQuizId());
+        QuizRecommendResDto quizRecommendResDto = quizService.increaseRecommendation(requestDto);
+        return ResponseEntity.ok(quizRecommendResDto);
     }
 }
