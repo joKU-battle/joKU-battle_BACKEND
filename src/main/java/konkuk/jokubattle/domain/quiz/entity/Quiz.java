@@ -1,10 +1,19 @@
 package konkuk.jokubattle.domain.quiz.entity;
 
-import jakarta.persistence.*;
-import konkuk.jokubattle.domain.user.entity.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
-
-import lombok.*;
+import konkuk.jokubattle.domain.user.entity.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -26,7 +35,7 @@ public class Quiz {
 
     @Column(nullable = false)
     private int recommendation;
-    
+
     @Column(nullable = false)
     private int correct;
 
@@ -50,5 +59,10 @@ public class Quiz {
                 .createdAt(LocalDateTime.now())
                 .user(user)
                 .build();
+    }
+
+    public void recommend() {
+        this.recommendation++;
+        user.increaseScore();
     }
 }

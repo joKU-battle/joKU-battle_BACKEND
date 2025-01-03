@@ -10,5 +10,4 @@ import lombok.Setter;
 public class QuizRequestDto {
     private String question;
     private String answer;
-    private Long userId;
 }
