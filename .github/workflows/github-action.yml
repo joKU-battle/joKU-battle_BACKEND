@@ -62,13 +62,10 @@ jobs:
             echo "도커 로그인"
             sudo docker login -u jokubattle2 -p joku12345
             
-            echo "사용하지 않는 컨테이너 제거"
             sudo docker stop jokubattle
             sudo docker rm -f jokubattle
             
-            echo "도커 허브에서 이미지 가져오기"
             sudo docker pull jokubattle2/jokubattle
             
-            echo "가져온 이미지를 컨테이너로 띄우기"
             sudo docker run --network jokubattle --name jokubattle -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/jokubattle
             sudo docker image prune -f
