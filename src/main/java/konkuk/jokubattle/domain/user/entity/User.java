@@ -5,8 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
+import konkuk.jokubattle.domain.title.entity.Title;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +42,10 @@ public class User {
 
     @Builder.Default
     private int score = 0;
+
+    @OneToMany
+    @JoinColumn(name = "us_idx")
+    private List<Title> titles;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

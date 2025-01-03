@@ -1,8 +1,11 @@
 package konkuk.jokubattle.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
+import konkuk.jokubattle.domain.title.dto.response.TitleRes;
 import konkuk.jokubattle.domain.user.dto.request.UserLoginReq;
 import konkuk.jokubattle.domain.user.dto.request.UserRegisterReq;
+import konkuk.jokubattle.domain.user.dto.response.UserMyPageRes;
 import konkuk.jokubattle.domain.user.dto.response.UserTokenRes;
 import konkuk.jokubattle.domain.user.entity.User;
 import konkuk.jokubattle.domain.user.repository.UserRepository;
@@ -38,5 +41,16 @@ public class UserService {
 
         String accessToken = jwtProvider.createAccessToken(user);
         return new UserTokenRes(accessToken);
+    }
+
+    public UserMyPageRes mypage(Long usIdx) {
+        User user = userRepository.findById(usIdx)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        List<TitleRes> titles = user.getTitles().stream()
+                .map(title -> new TitleRes(title.getName()))
+                .toList();
+        return UserMyPageRes.builder()
+                .titles(titles)
+                .build();
     }
 }
