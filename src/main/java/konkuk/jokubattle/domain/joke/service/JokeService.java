@@ -47,7 +47,9 @@ public class JokeService {
 
     public List<JokeResponseDto> getAllJokes(int month, int week) {
         List<Joke> jokes = jokeRepository.findAllByMonthAndYear(month, week);
-
+        if(jokes.isEmpty()) {
+            throw new CustomException(ErrorCode.JOKE_NOT_FOUND);
+        }
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
 
         return jokes.stream()

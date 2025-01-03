@@ -21,7 +21,9 @@ public enum SwaggerResponseDescription {
     QUIZ_CREATE(new LinkedHashSet<>(Set.of(
             ErrorCode.QUIZ_ALREADY_EXISTS
     ))),
-    QUIZ_LIST(new LinkedHashSet<>(Set.of())),
+    QUIZ_LIST(new LinkedHashSet<>(Set.of(
+            ErrorCode.QUIZ_NOT_FOUND_TODAY
+    ))),
     QUIZ_DETAIL(new LinkedHashSet<>(Set.of(
             ErrorCode.QUIZ_NOT_FOUND
     ))),

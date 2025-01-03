@@ -53,7 +53,9 @@ public class QuizService {
         LocalDateTime endOfToday = LocalDate.now().atTime(LocalTime.MAX);  // 오늘의 23:59:59
 
         List<Quiz> quizzes = quizRepository.findAllByTodayOrderByRecommendationDesc(startOfToday, endOfToday);
-
+        if(quizzes.isEmpty()) {
+            throw new CustomException(ErrorCode.QUIZ_NOT_FOUND_TODAY);
+        }
         return quizzes.stream()
                 .map(quiz -> new QuizResponseDto(
                         quiz.getQuIdx(),
